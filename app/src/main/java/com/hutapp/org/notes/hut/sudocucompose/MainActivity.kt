@@ -17,19 +17,21 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ModelSudoku
 import com.hutapp.org.notes.hut.sudocucompose.ui.theme.SUdocuComposeTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val selectedCellViewModel = ViewModelProvider(this).get(SelectedCellViewModel::class)
         setContent {
             SUdocuComposeTheme {
                 // A surface container using the 'background' color from the theme
@@ -37,7 +39,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Greeting()
+                    MyLazyGrid(selectedCellViewModel = selectedCellViewModel)
                 }
             }
         }
@@ -46,17 +48,14 @@ class MainActivity : ComponentActivity() {
 
 @SuppressLint("RememberReturnType")
 @Composable
-fun Greeting(modifier: Modifier = Modifier) {
-    val list = (1..81).map { it }
+fun MyLazyGrid(
+    modifier: Modifier = Modifier,
+    selectedCellViewModel: SelectedCellViewModel
+) {
+    val selectedSellValue = selectedCellViewModel.selectedCell.observeAsState()
+    val list = (1..81).map { it }// todo delete temp list
     var index = 0
-    val itemSelectedIndex = remember { mutableStateOf(-1) }
-    val rowSelected = remember { mutableStateOf(-1) }
-    val columSelected = remember { mutableStateOf(-1) }
     val colorGrid = MaterialTheme.colorScheme.onBackground
-    val columnGrid =
-        if (itemSelectedIndex.value > 0) (itemSelectedIndex.value / 9) / 3 + 1 else 0
-    val rowGrid =
-        if (itemSelectedIndex.value > 0) (itemSelectedIndex.value % 9) / 3 + 1 else 0
     Box(
         modifier = modifier.padding(16.dp),
         contentAlignment = Alignment.Center
@@ -74,7 +73,11 @@ fun Greeting(modifier: Modifier = Modifier) {
                                 )
                                 .aspectRatio(1f)
                                 .background(
-                                    color = getColorBackground(row, rowGrid, colum, columnGrid)
+                                    color = getColorBackground(
+                                        selectedSellValue.value,
+                                        row,
+                                        colum,
+                                    )
                                 )
                         )
                     }
@@ -93,25 +96,25 @@ fun Greeting(modifier: Modifier = Modifier) {
                                 .fillMaxSize()
                                 .background(
                                     getColorBoxBackgroung(
+                                        selectedSellValue.value,
                                         index,
-                                        itemSelectedIndex,
                                         row,
-                                        rowSelected,
                                         colum,
-                                        columSelected
                                     )
                                 )
                                 .border(width = 0.1.dp, color = colorGrid)
                                 .clickable {
-                                    rowSelected.value = row
-                                    columSelected.value = colum
-                                    itemSelectedIndex.value = list.indexOf(valueForText)
+                                    selectedCellViewModel.selectedCell(
+                                        index = list.indexOf(valueForText),
+                                        row = row,
+                                        colum = colum
+                                    )
                                 },
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
                                 text = valueForText.toString(),
-                                color = getColorTextSelectedCell(index, itemSelectedIndex)
+                                color = getColorTextSelectedCell(index, selectedSellValue.value)
                             )
                             index += 1
                         }
@@ -129,31 +132,36 @@ fun Greeting(modifier: Modifier = Modifier) {
 @Composable
 private fun getColorTextSelectedCell(
     index: Int,
-    itemSelectedIndex: MutableState<Int>
-) =
-    if (index == itemSelectedIndex.value) MaterialTheme.colorScheme.onPrimary else Color.Unspecified
+    modelSudoku: ModelSudoku?,
+
+    ) =
+    if (index == modelSudoku?.selectedCell) MaterialTheme.colorScheme.onPrimary else Color.Unspecified
 
 @Composable
 private fun getColorBackground(
+    modelSudoku: ModelSudoku?,
     row: Int,
-    rowGrid: Int,
     colum: Int,
-    columnGrid: Int
-) = if (row == rowGrid && colum == columnGrid) MaterialTheme.colorScheme.onBackground.copy(
-    alpha = 0.1f
-) else Color.Unspecified
+): Color {
+    val columnGrid =
+        if (modelSudoku != null) (modelSudoku.selectedCell / 9) / 3 + 1 else 0
+    val rowGrid =
+        if (modelSudoku != null) (modelSudoku.selectedCell % 9) / 3 + 1 else 0
+
+    return if (row == rowGrid && colum == columnGrid) MaterialTheme.colorScheme.onBackground.copy(
+        alpha = 0.1f
+    ) else Color.Unspecified
+}
 
 @Composable
 private fun getColorBoxBackgroung(
+    modelSudoku: ModelSudoku?,
     index: Int,
-    itemSelectedIndex: MutableState<Int>,
     row: Int,
-    rowSelected: MutableState<Int>,
-    colum: Int,
-    columSelected: MutableState<Int>
-) = if (index == itemSelectedIndex.value) {
+    colum: Int
+) = if (index == modelSudoku?.selectedCell) {
     MaterialTheme.colorScheme.primary // selected cell
-} else if (row == rowSelected.value || colum == columSelected.value) {
+} else if (row == modelSudoku?.selectedRow || colum == modelSudoku?.selectedCol) {
     MaterialTheme.colorScheme.onBackground.copy(alpha = 0.1f) // vertical horizontal cell
 } else {
     Color.Unspecified
@@ -163,6 +171,8 @@ private fun getColorBoxBackgroung(
 @Composable
 fun GreetingPreview() {
     SUdocuComposeTheme {
-        Greeting()
+        MyLazyGrid(
+            selectedCellViewModel = viewModel()
+        )
     }
 }
