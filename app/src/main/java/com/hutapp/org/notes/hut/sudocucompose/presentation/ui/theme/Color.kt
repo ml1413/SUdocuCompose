@@ -1,4 +1,4 @@
-package com.hutapp.org.notes.hut.sudocucompose.ui.theme
+package com.hutapp.org.notes.hut.sudocucompose.presentation.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

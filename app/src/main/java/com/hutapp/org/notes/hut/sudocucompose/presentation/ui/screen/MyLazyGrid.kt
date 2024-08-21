@@ -1,9 +1,5 @@
-package com.hutapp.org.notes.hut.sudocucompose
+package com.hutapp.org.notes.hut.sudocucompose.presentation.ui.screen
 
-import android.annotation.SuppressLint
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -14,7 +10,6 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
@@ -23,30 +18,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ModelSudoku
-import com.hutapp.org.notes.hut.sudocucompose.ui.theme.SUdocuComposeTheme
+import com.hutapp.org.notes.hut.sudocucompose.presentation.SelectedCellViewModel
+import com.hutapp.org.notes.hut.sudocucompose.presentation.ui.theme.SUdocuComposeTheme
 
-class MainActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        val selectedCellViewModel = ViewModelProvider(this).get(SelectedCellViewModel::class)
-        setContent {
-            SUdocuComposeTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    MyLazyGrid(selectedCellViewModel = selectedCellViewModel)
-                }
-            }
-        }
-    }
-}
 
-@SuppressLint("RememberReturnType")
 @Composable
 fun MyLazyGrid(
     modifier: Modifier = Modifier,
@@ -60,7 +37,7 @@ fun MyLazyGrid(
         modifier = modifier.padding(16.dp),
         contentAlignment = Alignment.Center
     ) {
-        Column {
+        Column(modifier = modifier.aspectRatio(1f)) {
             for (colum in 1..3) {
                 Row {
                     for (row in 1..3) {
@@ -95,7 +72,7 @@ fun MyLazyGrid(
                                 .weight(1f)
                                 .fillMaxSize()
                                 .background(
-                                    getColorBoxBackgroung(
+                                    getColorBoxBackground(
                                         selectedSellValue.value,
                                         index,
                                         row,
@@ -106,8 +83,8 @@ fun MyLazyGrid(
                                 .clickable {
                                     selectedCellViewModel.selectedCell(
                                         index = list.indexOf(valueForText),
-                                        row = row,
-                                        colum = colum
+                                        selectedRow = row,
+                                        selectedColum = colum
                                     )
                                 },
                             contentAlignment = Alignment.Center
@@ -123,8 +100,6 @@ fun MyLazyGrid(
             }
         }
         //__________________________________________________________________________________________
-
-
     }
 
 }
@@ -154,7 +129,7 @@ private fun getColorBackground(
 }
 
 @Composable
-private fun getColorBoxBackgroung(
+private fun getColorBoxBackground(
     modelSudoku: ModelSudoku?,
     index: Int,
     row: Int,
