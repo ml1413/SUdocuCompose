@@ -92,7 +92,7 @@ fun Greeting(modifier: Modifier = Modifier) {
                                 .weight(1f)
                                 .fillMaxSize()
                                 .background(
-                                    getColor(
+                                    getColorBoxBackgroung(
                                         index,
                                         itemSelectedIndex,
                                         row,
@@ -144,7 +144,7 @@ private fun getColorBackground(
 ) else Color.Unspecified
 
 @Composable
-private fun getColor(
+private fun getColorBoxBackgroung(
     index: Int,
     itemSelectedIndex: MutableState<Int>,
     row: Int,
