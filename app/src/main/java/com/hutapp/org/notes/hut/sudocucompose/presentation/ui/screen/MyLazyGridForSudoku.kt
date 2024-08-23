@@ -1,16 +1,24 @@
 package com.hutapp.org.notes.hut.sudocucompose.presentation.ui.screen
 
 import android.util.Log
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,24 +35,41 @@ import com.hutapp.org.notes.hut.sudocucompose.presentation.ui.theme.SUdocuCompos
 
 
 @Composable
-fun MyLazyGrid(
+fun MyLazyGridForSudoku(
     modifier: Modifier = Modifier,
     selectedCellViewModel: SelectedCellViewModel
 ) {
     Log.d("TAG1", "MyLazyGrid: ")
+    Column() {
+        GrandGrid(
+            modifier = modifier,
+            selectedCellViewModel = selectedCellViewModel
+        )
+        MyBottomKeyBoard(modifier, selectedCellViewModel)
+    }
+}
+
+
+@Composable
+private fun GrandGrid(
+    modifier: Modifier,
+    selectedCellViewModel: SelectedCellViewModel
+) {
     val listModelSudoku = selectedCellViewModel.selectedCell.observeAsState()
-//    val list = (1..81).map { it }// todo delete temp list
     var index = 0
     val colorGrid = MaterialTheme.colorScheme.onBackground
     val selectedCell = listModelSudoku.value?.filter { it.isSelected }.let {
         if (it?.isNotEmpty() == true) it.first() else null
     }
-    Column {
+    Card(
+        modifier = modifier.padding(start = 16.dp, 16.dp, 16.dp, 0.dp),
+        border = BorderStroke(1.dp, colorGrid),
+        elevation = CardDefaults.cardElevation(8.dp)
+    ) {
         Box(
-            modifier = modifier.padding(16.dp),
             contentAlignment = Alignment.Center
         ) {
-
+            // grand cells grid ___________________________________________________________________
             Column(modifier = modifier.aspectRatio(1f)) {
                 for (colum in 1..3) {
                     Row {
@@ -69,7 +94,7 @@ fun MyLazyGrid(
                     }
                 }
             }
-            //__________________________________________________________________________________________
+            //grid for number_______________________________________________________________________
             Column(modifier = modifier.aspectRatio(1f)) {
                 for (colum in 1..9) {
                     Row(modifier = modifier.weight(1f)) {
@@ -90,7 +115,9 @@ fun MyLazyGrid(
                                     .border(width = 0.1.dp, color = colorGrid)
                                     .clickable {
                                         selectedCellViewModel.selectedCell(
-                                            index = listModelSudoku.value?.indexOf(itemModelSudoku)
+                                            index = listModelSudoku.value?.indexOf(
+                                                itemModelSudoku
+                                            )
                                                 ?: 0,
                                             selectedRow = row,
                                             selectedColum = colum,
@@ -111,16 +138,32 @@ fun MyLazyGrid(
             }
 
         }
-        //__________________________________________________________________________________________
+    }
+}
 
-        Button(onClick = {
-            selectedCellViewModel.updateCell(value = 1)
-        }) {
-            Text(text = "*2")
+@Composable
+private fun MyBottomKeyBoard(
+    modifier: Modifier,
+    selectedCellViewModel: SelectedCellViewModel
+) {
+    val listNumber = (1..9).toList()
+    LazyVerticalGrid(
+        contentPadding = PaddingValues(8.dp, 0.dp, 8.dp, 16.dp),
+        columns = GridCells.Fixed(3), horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        items(listNumber) {
+            FloatingActionButton(
+                modifier = modifier.padding(8.dp),
+                onClick = {
+                    selectedCellViewModel.updateCell(value = it)
+                }) {
+                Text(text = "$it")
+            }
         }
     }
 }
 
+/**  OTHER FUN __________________________________________________________________________________*/
 @Composable
 private fun getColorTextSelectedCell(
     index: Int,
@@ -159,11 +202,12 @@ private fun getColorBoxBackground(
     Color.Unspecified
 }
 
+//Preview__________________________________________________________________________________________
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun GreetingPreview() {
-    SUdocuComposeTheme {
-        MyLazyGrid(
+    SUdocuComposeTheme(darkTheme = true) {
+        MyLazyGridForSudoku(
             selectedCellViewModel = viewModel()
         )
     }

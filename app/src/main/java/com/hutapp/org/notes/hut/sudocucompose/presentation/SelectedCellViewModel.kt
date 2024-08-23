@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.hutapp.org.notes.hut.sudocucompose.data.RepositoryModelSudokuImpl
+import com.hutapp.org.notes.hut.sudocucompose.data.RepositoryListModelSudokuImpl
 import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ModelSudoku
 import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.GetListForStartedUseCase
 import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.GetListModelSudokuUseCase
@@ -12,11 +12,11 @@ import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.UpdateCellUseCase
 
 class SelectedCellViewModel : ViewModel() {
     // todo need inject
-    private val repositoryModelSudokuImpl = RepositoryModelSudokuImpl()
+    private val repositoryListModelSudokuImpl = RepositoryListModelSudokuImpl()
     private val getModelSudokuUseCase =
         GetListModelSudokuUseCase()
     private val getListForStartedUseCase =
-        GetListForStartedUseCase(repositoryModelSudoku = repositoryModelSudokuImpl)
+        GetListForStartedUseCase(repositoryModelSudoku = repositoryListModelSudokuImpl)
     private val updateCellUseCase = UpdateCellUseCase()
 
     private val _selectedCell = MutableLiveData<List<ModelSudoku>>()
