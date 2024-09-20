@@ -7,7 +7,7 @@ class UpdateCellUseCase {
 
         val newList = list?.map { modelSudoku ->
             if (modelSudoku.isSelected) {
-                modelSudoku.copy(intValue = value)
+                modelSudoku.copy(numFromSelectedCell = value)
             } else
                 modelSudoku
         }

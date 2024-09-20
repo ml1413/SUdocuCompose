@@ -41,26 +41,27 @@ fun MyLazyGridForSudoku(
 ) {
     Log.d("TAG1", "MyLazyGrid: ")
     Column() {
-        GrandGrid(
+        SudokuTableGrid(
             modifier = modifier,
             selectedCellViewModel = selectedCellViewModel
         )
-        MyBottomKeyBoard(modifier, selectedCellViewModel)
+        MyBottomKeyBoard(
+            modifier = modifier,
+            selectedCellViewModel = selectedCellViewModel
+        )
     }
 }
 
 
 @Composable
-private fun GrandGrid(
+private fun SudokuTableGrid(
     modifier: Modifier,
     selectedCellViewModel: SelectedCellViewModel
 ) {
-    val listModelSudoku = selectedCellViewModel.selectedCell.observeAsState()
+    val listModelSudoku = selectedCellViewModel.selectedCell.observeAsState(emptyList())
     var index = 0
     val colorGrid = MaterialTheme.colorScheme.onBackground
-    val selectedCell = listModelSudoku.value?.filter { it.isSelected }.let {
-        if (it?.isNotEmpty() == true) it.first() else null
-    }
+    val selectedCell = listModelSudoku.value.firstOrNull { it.isSelected }
     Card(
         modifier = modifier.padding(start = 16.dp, 16.dp, 16.dp, 0.dp),
         border = BorderStroke(1.dp, colorGrid),
@@ -99,7 +100,7 @@ private fun GrandGrid(
                 for (colum in 1..9) {
                     Row(modifier = modifier.weight(1f)) {
                         for (row in 1..9) {
-                            val itemModelSudoku = listModelSudoku.value?.get(index)
+                            val itemModelSudoku = listModelSudoku.value.get(index)
                             Box(
                                 modifier = modifier
                                     .weight(1f)
@@ -113,21 +114,21 @@ private fun GrandGrid(
                                         )
                                     )
                                     .border(width = 0.1.dp, color = colorGrid)
-                                    .clickable {
+                                    .clickable(
+                                        enabled = itemModelSudoku.isStartedCell
+                                    ) {
                                         selectedCellViewModel.selectedCell(
-                                            index = listModelSudoku.value?.indexOf(
-                                                itemModelSudoku
-                                            )
-                                                ?: 0,
+                                            index = listModelSudoku.value.indexOf(itemModelSudoku),
                                             selectedRow = row,
                                             selectedColum = colum,
-                                            isSelected = true
+                                            isSelected = true,
                                         )
                                     },
                                 contentAlignment = Alignment.Center
                             ) {
+                                val numForCell = getTestForCell(itemModelSudoku = itemModelSudoku)
                                 Text(
-                                    text = itemModelSudoku?.intValue.toString(),
+                                    text = numForCell,
                                     color = getColorTextSelectedCell(index, selectedCell)
                                 )
                                 index += 1
@@ -141,6 +142,7 @@ private fun GrandGrid(
     }
 }
 
+
 @Composable
 private fun MyBottomKeyBoard(
     modifier: Modifier,
@@ -151,25 +153,34 @@ private fun MyBottomKeyBoard(
         contentPadding = PaddingValues(8.dp, 0.dp, 8.dp, 16.dp),
         columns = GridCells.Fixed(3), horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        items(listNumber) {
+        items(listNumber) { value ->
             FloatingActionButton(
                 modifier = modifier.padding(8.dp),
                 onClick = {
-                    selectedCellViewModel.updateCell(value = it)
-                }) {
-                Text(text = "$it")
+                    selectedCellViewModel.updateCell(value = value)
+                }
+            ) {
+                Text(text = "$value")
             }
         }
     }
 }
 
 /**  OTHER FUN __________________________________________________________________________________*/
+private fun getTestForCell(itemModelSudoku: ModelSudoku): String {
+    return itemModelSudoku.let {
+        if (it.isStartedCell)
+            if (it.numFromSelectedCell < 1) ""
+            else it.numFromSelectedCell.toString()
+        else it.numInCell.toString()
+    }
+}
+
 @Composable
 private fun getColorTextSelectedCell(
     index: Int,
-    modelSudoku: ModelSudoku?,
-
-    ) =
+    modelSudoku: ModelSudoku?
+) =
     if (index == modelSudoku?.selectedCellIndex) MaterialTheme.colorScheme.onPrimary else Color.Unspecified
 
 @Composable
@@ -178,14 +189,15 @@ private fun getColorBackground(
     row: Int,
     colum: Int,
 ): Color {
+    val isStartedCell = modelSudoku?.isStartedCell ?: false
     val columnGrid =
         if (modelSudoku != null) (modelSudoku.selectedCellIndex / 9) / 3 + 1 else 0
     val rowGrid =
         if (modelSudoku != null) (modelSudoku.selectedCellIndex % 9) / 3 + 1 else 0
 
-    return if (row == rowGrid && colum == columnGrid) MaterialTheme.colorScheme.onBackground.copy(
-        alpha = 0.1f
-    ) else Color.Unspecified
+    return if ((row == rowGrid && colum == columnGrid))
+        MaterialTheme.colorScheme.onBackground.copy(alpha = 0.1f)
+    else Color.Unspecified
 }
 
 @Composable
