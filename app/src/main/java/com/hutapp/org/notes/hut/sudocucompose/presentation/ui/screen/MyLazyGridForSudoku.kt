@@ -107,6 +107,7 @@ private fun SudokuTableGrid(
                                     .fillMaxSize()
                                     .background(
                                         getColorBoxBackground(
+                                            itemModelSudoku,
                                             selectedCell,
                                             index,
                                             row,
@@ -115,7 +116,7 @@ private fun SudokuTableGrid(
                                     )
                                     .border(width = 0.1.dp, color = colorGrid)
                                     .clickable(
-                                        enabled = itemModelSudoku.isStartedCell
+                                        enabled = itemModelSudoku.isStartedCell.not()
                                     ) {
                                         selectedCellViewModel.selectedCell(
                                             index = listModelSudoku.value.indexOf(itemModelSudoku),
@@ -170,9 +171,10 @@ private fun MyBottomKeyBoard(
 private fun getTestForCell(itemModelSudoku: ModelSudoku): String {
     return itemModelSudoku.let {
         if (it.isStartedCell)
+            it.numInCell.toString()
+        else
             if (it.numFromSelectedCell < 1) ""
             else it.numFromSelectedCell.toString()
-        else it.numInCell.toString()
     }
 }
 
@@ -189,29 +191,34 @@ private fun getColorBackground(
     row: Int,
     colum: Int,
 ): Color {
-    val isStartedCell = modelSudoku?.isStartedCell ?: false
     val columnGrid =
         if (modelSudoku != null) (modelSudoku.selectedCellIndex / 9) / 3 + 1 else 0
     val rowGrid =
         if (modelSudoku != null) (modelSudoku.selectedCellIndex % 9) / 3 + 1 else 0
 
     return if ((row == rowGrid && colum == columnGrid))
-        MaterialTheme.colorScheme.onBackground.copy(alpha = 0.1f)
+        MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)
     else Color.Unspecified
 }
 
 @Composable
 private fun getColorBoxBackground(
+    itemModelSudoku: ModelSudoku,
     modelSudoku: ModelSudoku?,
     index: Int,
     row: Int,
     colum: Int
-) = if (index == modelSudoku?.selectedCellIndex) {
-    MaterialTheme.colorScheme.primary // selected cell
-} else if (row == modelSudoku?.selectedRow || colum == modelSudoku?.selectedCol) {
-    MaterialTheme.colorScheme.onBackground.copy(alpha = 0.1f) // vertical horizontal cell
-} else {
-    Color.Unspecified
+): Color {
+    val backgroundColorCell =
+        MaterialTheme.colorScheme.onBackground // vertical horizontal cell
+    val selectedCell = MaterialTheme.colorScheme.primary // selected cell
+    return when {
+        index == modelSudoku?.selectedCellIndex -> selectedCell
+        row == modelSudoku?.selectedRow -> selectedCell.copy(alpha = 0.2f)
+        colum == modelSudoku?.selectedCol -> selectedCell.copy(alpha = 0.2f)
+        itemModelSudoku.isStartedCell -> backgroundColorCell.copy(alpha = 0.1f)
+        else -> Color.Unspecified
+    }
 }
 
 //Preview__________________________________________________________________________________________
