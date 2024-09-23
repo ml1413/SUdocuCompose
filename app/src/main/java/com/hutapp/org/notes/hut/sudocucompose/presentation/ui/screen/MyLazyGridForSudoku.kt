@@ -143,7 +143,7 @@ private fun SudokuTableGrid(
     }
 }
 
-
+// keyboard for set value in cell __________________________________________________________________
 @Composable
 private fun MyBottomKeyBoard(
     modifier: Modifier,
@@ -157,8 +157,9 @@ private fun MyBottomKeyBoard(
         items(listNumber) { value ->
             FloatingActionButton(
                 modifier = modifier.padding(8.dp),
+                containerColor = MaterialTheme.colorScheme.background,
                 onClick = {
-                    selectedCellViewModel.updateCell(value = value)
+                    selectedCellViewModel.setValueInCell(value = value)
                 }
             ) {
                 Text(text = "$value")
