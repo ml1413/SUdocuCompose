@@ -8,19 +8,19 @@ import com.hutapp.org.notes.hut.sudocucompose.data.SudokuGames
 import com.hutapp.org.notes.hut.sudocucompose.data.repository.RepositorySudokuGameImpl
 import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ModelSudoku
 import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.GetListForStartedUseCase
-import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.GetListModelSudokuUseCase
+import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.SelectedCellUseCase
 import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.SetValueInCellUseCase
 
 class SelectedCellViewModel : ViewModel() {
     // todo need inject
     private val sudokuGames = SudokuGames()
-    private val repositoryListModelSudokuImpl = RepositorySudokuGameImpl(sudokuGames)
+    private val repositorySudokuGameImpl = RepositorySudokuGameImpl(sudokuGames)
     private val getModelSudokuUseCase =
-        GetListModelSudokuUseCase()
+        SelectedCellUseCase(repositorySudokuGameImpl = repositorySudokuGameImpl)
     private val getListForStartedUseCase =
-        GetListForStartedUseCase(repositorySudokuGame = repositoryListModelSudokuImpl)
+        GetListForStartedUseCase(repositorySudokuGame = repositorySudokuGameImpl)
     private val setValueInCellUseCase =
-        SetValueInCellUseCase(repositorySudokuGameImpl = repositoryListModelSudokuImpl)
+        SetValueInCellUseCase(repositorySudokuGameImpl = repositorySudokuGameImpl)
 
     private val _selectedCell = MutableLiveData<List<ModelSudoku>>()
     val selectedCell: LiveData<List<ModelSudoku>> = _selectedCell

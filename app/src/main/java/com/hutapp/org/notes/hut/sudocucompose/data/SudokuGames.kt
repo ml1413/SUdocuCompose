@@ -3,6 +3,29 @@ package com.hutapp.org.notes.hut.sudocucompose.data
 import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ModelSudoku
 
 class SudokuGames {
+    /** selected cell fun_________________________________________________________________________*/
+     fun selectedCell(
+        listModelSudoku: List<ModelSudoku>?,
+        index: Int,
+        selectedRow: Int,
+        selectedColum: Int,
+        isSelected: Boolean
+    ): List<ModelSudoku> {
+        val newListCells = listModelSudoku
+            ?.map { modelSudoku ->
+                when {
+                    modelSudoku.isSelected -> modelSudoku.copy(isSelected = false)
+                    modelSudoku.selectedCellIndex == index -> modelSudoku.copy(
+                        selectedCol = selectedColum,
+                        selectedRow = selectedRow,
+                        isSelected = isSelected
+                    )
+
+                    else -> modelSudoku
+                }
+            }
+        return newListCells ?: emptyList()
+    }
     /**Set value in cell ________________________________________________________________________*/
     fun setValueInCell(value: Int, list: List<ModelSudoku>?): List<ModelSudoku> {
         val newList = list?.map { modelSudoku ->

@@ -5,6 +5,21 @@ import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ModelSudoku
 import com.hutapp.org.notes.hut.sudocucompose.domain.repository.RepositorySudokuGame
 
 class RepositorySudokuGameImpl(private val sudokuGames: SudokuGames) : RepositorySudokuGame {
+    override fun selectedCell(
+        listModelSudoku: List<ModelSudoku>?,
+        index: Int,
+        selectedRow: Int,
+        selectedColum: Int,
+        isSelected: Boolean
+    ): List<ModelSudoku> {
+        return sudokuGames.selectedCell(
+            listModelSudoku = listModelSudoku,
+            index = index,
+            selectedRow = selectedRow,
+            selectedColum = selectedColum,
+            isSelected = isSelected
+        )
+    }
 
     override fun getListForStated(): List<ModelSudoku> {
         return sudokuGames.getListModelSudoku()

@@ -1,11 +1,11 @@
 package com.hutapp.org.notes.hut.sudocucompose.domain.moles
 
 data class ModelSudoku(
-    var numInCell: Int,
-    var numFromSelectedCell: Int = -1,
+    val numInCell: Int,
+    val numFromSelectedCell: Int = -1,
     val isStartedCell: Boolean,
-    var isSelected: Boolean = false,
-    var selectedCellIndex: Int = -1,
-    var selectedRow: Int = -1,
-    var selectedCol: Int = -1,
+    val isSelected: Boolean = false,
+    val selectedCellIndex: Int = -1,
+    val selectedRow: Int = -1,
+    val selectedCol: Int = -1,
 )
