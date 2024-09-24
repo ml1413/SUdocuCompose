@@ -10,7 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.hutapp.org.notes.hut.sudocucompose.presentation.ui.screen.MyLazyGridForSudoku
+import com.hutapp.org.notes.hut.sudocucompose.presentation.ui.screen.sudokuTaple.MyLazyGridForSudokuScreen
 import com.hutapp.org.notes.hut.sudocucompose.presentation.ui.theme.SUdocuComposeTheme
 
 class MainActivity : ComponentActivity() {
@@ -23,7 +23,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    MyLazyGridForSudoku(selectedCellViewModel = viewModel())
+                    MyLazyGridForSudokuScreen(selectedCellViewModel = viewModel())
                 }
             }
         }
@@ -34,6 +34,6 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun Preview(modifier: Modifier = Modifier) {
     SUdocuComposeTheme {
-        MyLazyGridForSudoku(selectedCellViewModel = viewModel())
+        MyLazyGridForSudokuScreen(selectedCellViewModel = viewModel())
     }
 }

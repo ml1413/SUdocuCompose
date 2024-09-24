@@ -22,29 +22,41 @@ class SelectedCellViewModel : ViewModel() {
     private val setValueInCellUseCase =
         SetValueInCellUseCase(repositorySudokuGameImpl = repositorySudokuGameImpl)
 
-    private val _selectedCell = MutableLiveData<List<ModelSudoku>>()
-    val selectedCell: LiveData<List<ModelSudoku>> = _selectedCell
+    private val _selectedCell = MutableLiveData<GameState>(GameState.Initial)
+    val selectedCell: LiveData<GameState> = _selectedCell
 
     init {
         val list = getListForStartedUseCase()
         Log.d("TAG1", ": $list")
-        _selectedCell.value = list
+        _selectedCell.value = GameState.ResumeGame(list = list)
     }
 
     fun selectedCell(index: Int, selectedRow: Int, selectedColum: Int, isSelected: Boolean) {
-        val modelSudoku = getModelSudokuUseCase(
-            listModelSudoku = _selectedCell.value,
-            index = index,
-            selectedRow = selectedRow,
-            selectedColum = selectedColum,
-            isSelected = isSelected
-        )
-        _selectedCell.value = modelSudoku
+        val stateGame = _selectedCell.value
+        if (stateGame is GameState.ResumeGame) {
+            val listModelSudoku = getModelSudokuUseCase(
+                listModelSudoku = stateGame.list,
+                index = index,
+                selectedRow = selectedRow,
+                selectedColum = selectedColum,
+                isSelected = isSelected
+            )
+            _selectedCell.value = GameState.ResumeGame(list = listModelSudoku)
+        }
     }
 
     fun setValueInCell(value: Int) {
-        val newList = setValueInCellUseCase(value = value, list = _selectedCell.value)
-        _selectedCell.value = newList
+        val stateGame = _selectedCell.value
+        if (stateGame is GameState.ResumeGame) {
+            val newList = setValueInCellUseCase(value = value, list = stateGame.list)
+            _selectedCell.value = GameState.ResumeGame(list = newList)
+        }
+    }
+
+    sealed class GameState() {
+        object Initial : GameState()
+        class ResumeGame(val list: List<ModelSudoku>) : GameState()
+        object Victory : GameState()
     }
 
 
