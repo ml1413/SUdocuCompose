@@ -1,53 +1,63 @@
 package com.hutapp.org.notes.hut.sudocucompose.data
 
+import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ItemCell
 import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ModelSudoku
 
 class SudokuGames {
     /** selected cell fun_________________________________________________________________________*/
-     fun selectedCell(
-        listModelSudoku: List<ModelSudoku>?,
+    fun selectedCell(
+        modelSudoku: ModelSudoku,
         index: Int,
         selectedRow: Int,
         selectedColum: Int,
         isSelected: Boolean
-    ): List<ModelSudoku> {
-        val newListCells = listModelSudoku
-            ?.map { modelSudoku ->
-                when {
-                    modelSudoku.isSelected -> modelSudoku.copy(isSelected = false)
-                    modelSudoku.selectedCellIndex == index -> modelSudoku.copy(
-                        selectedCol = selectedColum,
-                        selectedRow = selectedRow,
-                        isSelected = isSelected
-                    )
+    ): ModelSudoku {
+        var selectedItem: ItemCell? = null
 
-                    else -> modelSudoku
+        val newListCells = modelSudoku.listItemCell
+            .map { itemCell ->
+                when {
+                    itemCell.isSelected -> itemCell.copy(isSelected = false)
+                    itemCell.selectedCellIndex == index -> {
+                        val newItem = itemCell.copy(
+                            selectedCol = selectedColum,
+                            selectedRow = selectedRow,
+                            isSelected = isSelected
+                        )
+                        selectedItem = newItem
+                        newItem
+                    }
+
+                    else -> itemCell
                 }
             }
-        return newListCells ?: emptyList()
+        return modelSudoku.copy(listItemCell = newListCells, selectedCell = selectedItem)
     }
+
     /**Set value in cell ________________________________________________________________________*/
-    fun setValueInCell(value: Int, list: List<ModelSudoku>?): List<ModelSudoku> {
-        val newList = list?.map { modelSudoku ->
-            if (modelSudoku.isSelected) {
-                modelSudoku.copy(numFromSelectedCell = value)
+    fun setValueInCell(value: Int, modelSudoku: ModelSudoku): ModelSudoku {
+        //todo need fun to check  is correct answer
+        val newList = modelSudoku.listItemCell.map { itemCell ->
+            if (itemCell.isSelected) {
+                itemCell.copy(numFromSelectedCell = value)
             } else
-                modelSudoku
+                itemCell
         }
-        return newList ?: emptyList()
+        return modelSudoku.copy(listItemCell = newList)
     }
 
     /**generate list<Int>________________________________________________________________________ */
-    fun getListModelSudoku(level: Int = 1): List<ModelSudoku> {
+    fun getListModelSudoku(level: Int = 1): ModelSudoku {
         // map list<Int> to List<ModelSudoku>
-        return generateSudoku().mapIndexed { index, value ->
+        val listItemCell = generateSudoku().mapIndexed { index, value ->
             val isStartedCell = ((0..level).random()) > 0
-            ModelSudoku(
+            ItemCell(
                 numInCell = value,
                 isStartedCell = isStartedCell,
                 selectedCellIndex = index
             )
         }
+        return ModelSudoku(listItemCell = listItemCell)
     }
 
 

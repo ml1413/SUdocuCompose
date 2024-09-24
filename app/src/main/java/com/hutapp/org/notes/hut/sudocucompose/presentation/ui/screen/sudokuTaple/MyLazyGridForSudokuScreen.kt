@@ -18,10 +18,10 @@ import com.hutapp.org.notes.hut.sudocucompose.presentation.SelectedCellViewModel
 @Composable
 fun MyLazyGridForSudokuScreen(
     modifier: Modifier = Modifier,
-    selectedCellViewModel: SelectedCellViewModel
+    CellViewModel: SelectedCellViewModel
 ) {
     val sudokuViewModelState =
-        selectedCellViewModel.selectedCell.observeAsState(SelectedCellViewModel.GameState.Initial)
+        CellViewModel.selectedCell.observeAsState(SelectedCellViewModel.GameState.Initial)
     val stateFromViewModel = sudokuViewModelState.value
     if (stateFromViewModel is SelectedCellViewModel.GameState.ResumeGame) {
         val colorGrid = MaterialTheme.colorScheme.onBackground
@@ -41,11 +41,20 @@ fun MyLazyGridForSudokuScreen(
                     modifier = modifier,
                     stateFromViewModel = stateFromViewModel,
                     colorGrid = colorGrid,
-                    selectedCellViewModel = selectedCellViewModel
+                    onCellClickListener = { index, selectedRow, selectedColum, isSelected ->
+                        CellViewModel.selectedCell(
+                            index = index,
+                            selectedRow = selectedRow,
+                            selectedColum = selectedColum,
+                            isSelected = isSelected
+                        )
+                    }
                 )
                 MyBottomKeyBoard(
                     modifier = modifier,
-                    selectedCellViewModel = selectedCellViewModel
+                    onNumButtonClickListener = { value ->
+                        CellViewModel.setValueInCell(value = value)
+                    }
                 )
             }
         }

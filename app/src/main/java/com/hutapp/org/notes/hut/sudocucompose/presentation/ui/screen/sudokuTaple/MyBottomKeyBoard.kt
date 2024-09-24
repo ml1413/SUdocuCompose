@@ -19,7 +19,7 @@ import com.hutapp.org.notes.hut.sudocucompose.presentation.SelectedCellViewModel
 @Composable
 fun MyBottomKeyBoard(
     modifier: Modifier,
-    selectedCellViewModel: SelectedCellViewModel
+    onNumButtonClickListener: (Int) -> Unit
 ) {
     val listNumber = (1..9).toList()
     LazyVerticalGrid(
@@ -35,7 +35,7 @@ fun MyBottomKeyBoard(
                     ),
                 containerColor = MaterialTheme.colorScheme.background,
                 onClick = {
-                    selectedCellViewModel.setValueInCell(value = value)
+                    onNumButtonClickListener(value)
                 }
             ) {
                 Text(text = "$value")

@@ -1,18 +1,19 @@
 package com.hutapp.org.notes.hut.sudocucompose.domain.uscase
 
 import com.hutapp.org.notes.hut.sudocucompose.data.repository.RepositorySudokuGameImpl
+import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ItemCell
 import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ModelSudoku
 
 class SelectedCellUseCase(private val repositorySudokuGameImpl: RepositorySudokuGameImpl) {
     operator fun invoke(
-        listModelSudoku: List<ModelSudoku>?,
+        modelSudoku: ModelSudoku,
         index: Int,
         selectedRow: Int,
         selectedColum: Int,
         isSelected: Boolean
-    ): List<ModelSudoku> {
+    ): ModelSudoku{
         return repositorySudokuGameImpl.selectedCell(
-            listModelSudoku = listModelSudoku,
+            modelSudoku = modelSudoku,
             index = index,
             selectedRow = selectedRow,
             selectedColum = selectedColum,

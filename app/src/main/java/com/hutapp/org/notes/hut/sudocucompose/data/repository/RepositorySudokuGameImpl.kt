@@ -1,19 +1,20 @@
 package com.hutapp.org.notes.hut.sudocucompose.data.repository
 
 import com.hutapp.org.notes.hut.sudocucompose.data.SudokuGames
+import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ItemCell
 import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ModelSudoku
 import com.hutapp.org.notes.hut.sudocucompose.domain.repository.RepositorySudokuGame
 
 class RepositorySudokuGameImpl(private val sudokuGames: SudokuGames) : RepositorySudokuGame {
     override fun selectedCell(
-        listModelSudoku: List<ModelSudoku>?,
+        modelSudoku: ModelSudoku,
         index: Int,
         selectedRow: Int,
         selectedColum: Int,
         isSelected: Boolean
-    ): List<ModelSudoku> {
+    ): ModelSudoku{
         return sudokuGames.selectedCell(
-            listModelSudoku = listModelSudoku,
+            modelSudoku = modelSudoku,
             index = index,
             selectedRow = selectedRow,
             selectedColum = selectedColum,
@@ -21,11 +22,11 @@ class RepositorySudokuGameImpl(private val sudokuGames: SudokuGames) : Repositor
         )
     }
 
-    override fun getListForStated(): List<ModelSudoku> {
+    override fun getListForStated(): ModelSudoku{
         return sudokuGames.getListModelSudoku()
     }
 
-    override fun setValueInCell(value: Int, list: List<ModelSudoku>?): List<ModelSudoku> {
-        return sudokuGames.setValueInCell(value = value, list = list)
+    override fun setValueInCell(value: Int, modelSudoku: ModelSudoku): ModelSudoku {
+        return sudokuGames.setValueInCell(value = value, modelSudoku = modelSudoku)
     }
 }

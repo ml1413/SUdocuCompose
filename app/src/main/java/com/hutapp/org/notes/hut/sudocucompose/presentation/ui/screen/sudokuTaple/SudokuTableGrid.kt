@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -25,13 +26,14 @@ fun SudokuTableGrid(
     modifier: Modifier,
     stateFromViewModel: SelectedCellViewModel.GameState.ResumeGame,
     colorGrid: Color,
-    selectedCellViewModel: SelectedCellViewModel
+    onCellClickListener: (index: Int, selectedRow: Int, selectedColum: Int, isSelected: Boolean) -> Unit
 ) {
     var index = 0
-    val selectedCell = stateFromViewModel.list.firstOrNull { it.isSelected }
     Card(
         border = BorderStroke(1.dp, colorGrid),
-        elevation = CardDefaults.cardElevation(8.dp)
+        elevation = CardDefaults.cardElevation(8.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background)
+
     ) {
         Box(
             contentAlignment = Alignment.Center
@@ -51,7 +53,7 @@ fun SudokuTableGrid(
                                     .aspectRatio(1f)
                                     .background(
                                         color = getColorBackgroundGrandGrid(
-                                            selectedCell,
+                                            stateFromViewModel.modelSudoku.selectedCell,
                                             row,
                                             colum,
                                         )
@@ -66,7 +68,8 @@ fun SudokuTableGrid(
                 for (colum in 1..9) {
                     Row(modifier = modifier.weight(1f)) {
                         for (row in 1..9) {
-                            val itemModelSudoku = stateFromViewModel.list.get(index)
+                            val itemModelSudoku =
+                                stateFromViewModel.modelSudoku.listItemCell.get(index)
                             Box(
                                 modifier = modifier
                                     .weight(1f)
@@ -74,7 +77,7 @@ fun SudokuTableGrid(
                                     .background(
                                         getColorBoxBackground(
                                             itemModelSudoku,
-                                            selectedCell,
+                                            stateFromViewModel.modelSudoku.selectedCell,
                                             index,
                                             row,
                                             colum,
@@ -87,24 +90,25 @@ fun SudokuTableGrid(
                                     .clickable(
                                         enabled = itemModelSudoku.isStartedCell.not()
                                     ) {
-                                        selectedCellViewModel
-                                            .selectedCell(
-                                                index = stateFromViewModel.list.indexOf(
-                                                    itemModelSudoku
-                                                ),
-                                                selectedRow = row,
-                                                selectedColum = colum,
-                                                isSelected = true,
-                                            )
+                                        val indexCell = stateFromViewModel
+                                            .modelSudoku
+                                            .listItemCell
+                                            .indexOf(itemModelSudoku)
+                                        onCellClickListener(
+                                            indexCell,
+                                            row,
+                                            colum,
+                                            true
+                                        )
                                     },
                                 contentAlignment = Alignment.Center
                             ) {
                                 val numForCell =
-                                    getTestForCell(itemModelSudoku = itemModelSudoku)
+                                    getTestForCell(itemItemCell = itemModelSudoku)
                                 Text(
                                     text = numForCell,
                                     color = getColorTextForCell(
-                                        selectedCell,
+                                        stateFromViewModel.modelSudoku.selectedCell,
                                         index,
                                         row,
                                         colum,
