@@ -5,6 +5,7 @@ import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ModelSudoku
 interface RepositorySudokuGame {
     fun getListForStated(): ModelSudoku
     fun setValueInCell(value: Int, modelSudoku: ModelSudoku): ModelSudoku
+    fun checkAllAnswer(modelSudoku: ModelSudoku): ModelSudoku
     fun selectedCell(
         modelSudoku: ModelSudoku,
         index: Int,

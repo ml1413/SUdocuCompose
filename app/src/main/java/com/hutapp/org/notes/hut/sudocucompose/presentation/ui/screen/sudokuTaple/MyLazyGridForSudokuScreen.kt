@@ -1,6 +1,5 @@
 package com.hutapp.org.notes.hut.sudocucompose.presentation.ui.screen.sudokuTaple
 
-import android.util.Log
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,19 +12,20 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.hutapp.org.notes.hut.sudocucompose.presentation.SelectedCellViewModel
+import com.hutapp.org.notes.hut.sudocucompose.presentation.ui.screen.screen_result.ScreenResult
 
 
 @Composable
 fun MyLazyGridForSudokuScreen(
     modifier: Modifier = Modifier,
-    CellViewModel: SelectedCellViewModel
+    cellViewModel: SelectedCellViewModel
 ) {
     val sudokuViewModelState =
-        CellViewModel.selectedCell.observeAsState(SelectedCellViewModel.GameState.Initial)
+        cellViewModel.selectedCell.observeAsState(SelectedCellViewModel.GameState.Initial)
+
     val stateFromViewModel = sudokuViewModelState.value
     if (stateFromViewModel is SelectedCellViewModel.GameState.ResumeGame) {
         val colorGrid = MaterialTheme.colorScheme.onBackground
-        Log.d("TAG1", "MyLazyGrid: ")
         Box(
             modifier = modifier
                 .wrapContentSize()
@@ -42,7 +42,7 @@ fun MyLazyGridForSudokuScreen(
                     stateFromViewModel = stateFromViewModel,
                     colorGrid = colorGrid,
                     onCellClickListener = { index, selectedRow, selectedColum, isSelected ->
-                        CellViewModel.selectedCell(
+                        cellViewModel.selectedCell(
                             index = index,
                             selectedRow = selectedRow,
                             selectedColum = selectedColum,
@@ -53,12 +53,12 @@ fun MyLazyGridForSudokuScreen(
                 MyBottomKeyBoard(
                     modifier = modifier,
                     onNumButtonClickListener = { value ->
-                        CellViewModel.setValueInCell(value = value)
+                        cellViewModel.setValueInCell(value = value)
                     }
                 )
             }
         }
     } else {
-
+        ScreenResult()
     }
 }

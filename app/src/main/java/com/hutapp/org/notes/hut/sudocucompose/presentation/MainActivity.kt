@@ -23,7 +23,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    MyLazyGridForSudokuScreen(CellViewModel = viewModel())
+                    MyLazyGridForSudokuScreen(cellViewModel = viewModel())
                 }
             }
         }
@@ -34,6 +34,6 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun Preview(modifier: Modifier = Modifier) {
     SUdocuComposeTheme {
-        MyLazyGridForSudokuScreen(CellViewModel = viewModel())
+        MyLazyGridForSudokuScreen(cellViewModel = viewModel())
     }
 }

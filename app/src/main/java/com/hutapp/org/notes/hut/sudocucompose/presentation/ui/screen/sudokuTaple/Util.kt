@@ -9,10 +9,10 @@ import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ItemCell
 fun getTestForCell(itemItemCell: ItemCell): String {
     return itemItemCell.let {
         if (it.isStartedCell)
-            it.numInCell.toString()
+            it.startedValue.toString()
         else
-            if (it.numFromSelectedCell < 1) ""
-            else it.numFromSelectedCell.toString()
+            if (it.setValue < 1) ""
+            else it.setValue.toString()
     }
 }
 

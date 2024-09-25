@@ -1,9 +1,22 @@
 package com.hutapp.org.notes.hut.sudocucompose.data
 
+import android.util.Log
 import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ItemCell
 import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ModelSudoku
 
 class SudokuGames {
+    /**check all answer __________________________________________________________________________*/
+    fun checkAllAnswer(modelSudoku: ModelSudoku): ModelSudoku {
+        // check if all answer(setValue) == correctAnswer(startedValue)  =  true
+        val allAnswerIssCorrections = modelSudoku
+            .listItemCell.map { it.setValue == it.startedValue }
+            .contains(false).not()
+        //_________________________________________________________________________________________
+        return if (allAnswerIssCorrections)
+            modelSudoku.copy(isVictory = allAnswerIssCorrections)
+        else modelSudoku
+    }
+
     /** selected cell fun_________________________________________________________________________*/
     fun selectedCell(
         modelSudoku: ModelSudoku,
@@ -36,10 +49,9 @@ class SudokuGames {
 
     /**Set value in cell ________________________________________________________________________*/
     fun setValueInCell(value: Int, modelSudoku: ModelSudoku): ModelSudoku {
-        //todo need fun to check  is correct answer
         val newList = modelSudoku.listItemCell.map { itemCell ->
             if (itemCell.isSelected) {
-                itemCell.copy(numFromSelectedCell = value)
+                itemCell.copy(setValue = value)
             } else
                 itemCell
         }
@@ -52,7 +64,7 @@ class SudokuGames {
         val listItemCell = generateSudoku().mapIndexed { index, value ->
             val isStartedCell = ((0..level).random()) > 0
             ItemCell(
-                numInCell = value,
+                startedValue = value,
                 isStartedCell = isStartedCell,
                 selectedCellIndex = index
             )

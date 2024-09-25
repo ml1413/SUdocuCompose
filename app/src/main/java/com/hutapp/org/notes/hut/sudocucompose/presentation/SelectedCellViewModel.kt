@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.hutapp.org.notes.hut.sudocucompose.data.SudokuGames
 import com.hutapp.org.notes.hut.sudocucompose.data.repository.RepositorySudokuGameImpl
 import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ModelSudoku
+import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.CheckAllAnswerUseCase
 import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.GetListForStartedUseCase
 import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.SelectedCellUseCase
 import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.SetValueInCellUseCase
@@ -20,6 +21,8 @@ class SelectedCellViewModel : ViewModel() {
         GetListForStartedUseCase(repositorySudokuGame = repositorySudokuGameImpl)
     private val setValueInCellUseCase =
         SetValueInCellUseCase(repositorySudokuGameImpl = repositorySudokuGameImpl)
+    private val checkAllAnswerUseCase =
+        CheckAllAnswerUseCase(repositorySudokuGame = repositorySudokuGameImpl)
 
     private val _selectedCell = MutableLiveData<GameState>(GameState.Initial)
     val selectedCell: LiveData<GameState> = _selectedCell
@@ -48,9 +51,12 @@ class SelectedCellViewModel : ViewModel() {
         if (stateGame is GameState.ResumeGame) {
             val newModelSudoku =
                 setValueInCellUseCase(value = value, modelSudoku = stateGame.modelSudoku)
-            _selectedCell.value = GameState.ResumeGame(modelSudoku = newModelSudoku)
+            val isAllAnswerCorrect = checkAllAnswerUseCase(modelSudoku = newModelSudoku)
+
+            checkIsVictory(isAllAnswerCorrect, newModelSudoku)
         }
     }
+
 
     sealed class GameState() {
         object Initial : GameState()
@@ -58,5 +64,16 @@ class SelectedCellViewModel : ViewModel() {
         object Victory : GameState()
     }
 
+    /** other fun_________________________________________________________________________________*/
+    private fun checkIsVictory(
+        isAllAnswerCorrect: ModelSudoku,
+        newModelSudoku: ModelSudoku
+    ) {
+        if (isAllAnswerCorrect.isVictory) {
+            _selectedCell.value = GameState.Victory
+        } else {
+            _selectedCell.value = GameState.ResumeGame(modelSudoku = newModelSudoku)
+        }
+    }
 
 }
