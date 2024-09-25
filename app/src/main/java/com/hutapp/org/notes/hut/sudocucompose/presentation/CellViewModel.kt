@@ -11,7 +11,7 @@ import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.GetListForStartedUse
 import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.SelectedCellUseCase
 import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.SetValueInCellUseCase
 
-class SelectedCellViewModel : ViewModel() {
+class CellViewModel : ViewModel() {
     // todo need inject
     private val sudokuGames = SudokuGames()
     private val repositorySudokuGameImpl = RepositorySudokuGameImpl(sudokuGames)

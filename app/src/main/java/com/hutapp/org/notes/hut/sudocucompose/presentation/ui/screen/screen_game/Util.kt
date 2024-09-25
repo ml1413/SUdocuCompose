@@ -1,4 +1,4 @@
-package com.hutapp.org.notes.hut.sudocucompose.presentation.ui.screen.sudokuTaple
+package com.hutapp.org.notes.hut.sudocucompose.presentation.ui.screen.screen_game
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable

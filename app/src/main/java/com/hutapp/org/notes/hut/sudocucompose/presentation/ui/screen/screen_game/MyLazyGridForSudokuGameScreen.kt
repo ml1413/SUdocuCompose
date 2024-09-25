@@ -1,4 +1,4 @@
-package com.hutapp.org.notes.hut.sudocucompose.presentation.ui.screen.sudokuTaple
+package com.hutapp.org.notes.hut.sudocucompose.presentation.ui.screen.screen_game
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
@@ -11,20 +11,21 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.hutapp.org.notes.hut.sudocucompose.presentation.SelectedCellViewModel
-import com.hutapp.org.notes.hut.sudocucompose.presentation.ui.screen.screen_result.ScreenResult
+import com.hutapp.org.notes.hut.sudocucompose.presentation.CellViewModel
+import com.hutapp.org.notes.hut.sudocucompose.presentation.ui.screen.screen_result.ScreenVictory
 
 
 @Composable
-fun MyLazyGridForSudokuScreen(
+fun MyLazyGridForSudokuGameScreen(
     modifier: Modifier = Modifier,
-    cellViewModel: SelectedCellViewModel
+    cellViewModel: CellViewModel,
+    navigateOnScreenVictory: () -> Unit
 ) {
     val sudokuViewModelState =
-        cellViewModel.selectedCell.observeAsState(SelectedCellViewModel.GameState.Initial)
+        cellViewModel.selectedCell.observeAsState(CellViewModel.GameState.Initial)
 
     val stateFromViewModel = sudokuViewModelState.value
-    if (stateFromViewModel is SelectedCellViewModel.GameState.ResumeGame) {
+    if (stateFromViewModel is CellViewModel.GameState.ResumeGame) {
         val colorGrid = MaterialTheme.colorScheme.onBackground
         Box(
             modifier = modifier
@@ -58,7 +59,7 @@ fun MyLazyGridForSudokuScreen(
                 )
             }
         }
-    } else {
-        ScreenResult()
+    } else if (stateFromViewModel is CellViewModel.GameState.Victory) {
+        navigateOnScreenVictory()
     }
 }

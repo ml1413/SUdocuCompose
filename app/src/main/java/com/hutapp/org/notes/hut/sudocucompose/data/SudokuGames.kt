@@ -1,6 +1,5 @@
 package com.hutapp.org.notes.hut.sudocucompose.data
 
-import android.util.Log
 import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ItemCell
 import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ModelSudoku
 

@@ -1,4 +1,4 @@
-package com.hutapp.org.notes.hut.sudocucompose.presentation.ui.screen.sudokuTaple
+package com.hutapp.org.notes.hut.sudocucompose.presentation.ui.screen.screen_game
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -13,7 +13,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.hutapp.org.notes.hut.sudocucompose.presentation.SelectedCellViewModel
 
 // keyboard for set value in cell __________________________________________________________________
 @Composable

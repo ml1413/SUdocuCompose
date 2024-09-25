@@ -1,4 +1,4 @@
-package com.hutapp.org.notes.hut.sudocucompose.presentation.ui.screen.sudokuTaple
+package com.hutapp.org.notes.hut.sudocucompose.presentation.ui.screen.screen_game
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -18,13 +18,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.hutapp.org.notes.hut.sudocucompose.presentation.SelectedCellViewModel
+import com.hutapp.org.notes.hut.sudocucompose.presentation.CellViewModel
 
 // sudoku table ________________________________________________________________________________
 @Composable
 fun SudokuTableGrid(
     modifier: Modifier,
-    stateFromViewModel: SelectedCellViewModel.GameState.ResumeGame,
+    stateFromViewModel: CellViewModel.GameState.ResumeGame,
     colorGrid: Color,
     onCellClickListener: (index: Int, selectedRow: Int, selectedColum: Int, isSelected: Boolean) -> Unit
 ) {

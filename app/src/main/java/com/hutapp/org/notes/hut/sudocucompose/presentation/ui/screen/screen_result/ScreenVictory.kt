@@ -9,7 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
-fun ScreenResult(modifier: Modifier = Modifier) {
+fun ScreenVictory(modifier: Modifier = Modifier) {
     Box(
         modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -21,5 +21,5 @@ fun ScreenResult(modifier: Modifier = Modifier) {
 @Composable
 @Preview(showSystemUi = true, showBackground = true)
 fun Preview(modifier: Modifier = Modifier) {
-    ScreenResult()
+    ScreenVictory()
 }

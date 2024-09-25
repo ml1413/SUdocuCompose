@@ -59,6 +59,9 @@ dependencies {
     // runtime-livedata
     implementation("androidx.compose.runtime:runtime-livedata:1.5.4")
     //lifecycle-viewmodel
+    //navigation-compose
+    implementation("androidx.navigation:navigation-compose:2.8.1")
+
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
