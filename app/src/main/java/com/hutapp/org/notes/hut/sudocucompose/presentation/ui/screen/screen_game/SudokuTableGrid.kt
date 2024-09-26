@@ -76,11 +76,10 @@ fun SudokuTableGrid(
                                     .fillMaxSize()
                                     .background(
                                         getColorBoxBackground(
-                                            itemModelSudoku,
-                                            stateFromViewModel.modelSudoku.selectedCell,
-                                            index,
-                                            row,
-                                            colum,
+                                            modelSudoku = stateFromViewModel.modelSudoku,
+                                            index = index,
+                                            row = row,
+                                            colum = colum,
                                         )
                                     )
                                     .border(
@@ -108,10 +107,10 @@ fun SudokuTableGrid(
                                 Text(
                                     text = numForCell,
                                     color = getColorTextForCell(
-                                        stateFromViewModel.modelSudoku.selectedCell,
-                                        index,
-                                        row,
-                                        colum,
+                                        modelSudoku = stateFromViewModel.modelSudoku,
+                                        index = index,
+                                        row = row,
+                                        colum = colum,
                                     )
                                 )
                                 index += 1

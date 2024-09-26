@@ -49,10 +49,11 @@ class CellViewModel : ViewModel() {
     fun setValueInCell(value: Int) {
         val stateGame = _selectedCell.value
         if (stateGame is GameState.ResumeGame) {
+            //set value in model
             val newModelSudoku =
                 setValueInCellUseCase(value = value, modelSudoku = stateGame.modelSudoku)
+            // check app answer
             val isAllAnswerCorrect = checkAllAnswerUseCase(modelSudoku = newModelSudoku)
-
             checkIsVictory(isAllAnswerCorrect, newModelSudoku)
         }
     }

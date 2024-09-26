@@ -4,6 +4,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ItemCell
+import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ModelSudoku
 
 /**  OTHER FUN __________________________________________________________________________________*/
 fun getTestForCell(itemItemCell: ItemCell): String {
@@ -35,36 +36,37 @@ fun getColorBackgroundGrandGrid(
 
 @Composable
 fun getColorBoxBackground(
-    itemItemCell: ItemCell,
-    itemCell: ItemCell?,
+    modelSudoku: ModelSudoku,
     index: Int,
     row: Int,
     colum: Int
 ): Color {
     val backgroundColorCell =
         MaterialTheme.colorScheme.onBackground // vertical horizontal cell
-    val selectedCell = MaterialTheme.colorScheme.primary // selected cell
+    val colorSelectedCell = MaterialTheme.colorScheme.primary // selected cell
     return when {
-        index == itemCell?.selectedCellIndex -> selectedCell
-        row == itemCell?.selectedRow -> selectedCell.copy(alpha = 0.4f)
-        colum == itemCell?.selectedCol -> selectedCell.copy(alpha = 0.4f)
-        itemItemCell.isStartedCell -> backgroundColorCell.copy(alpha = 0.1f)
+        index == modelSudoku.selectedCell?.selectedCellIndex -> colorSelectedCell
+        row == modelSudoku.selectedCell?.selectedRow -> colorSelectedCell.copy(alpha = 0.4f)
+        colum == modelSudoku.selectedCell?.selectedCol -> colorSelectedCell.copy(alpha = 0.4f)
+        modelSudoku.listItemCell[index].isStartedCell -> backgroundColorCell.copy(alpha = 0.1f)
         else -> Color.Unspecified
     }
 }
 
 @Composable
 fun getColorTextForCell(
-    itemCell: ItemCell?,
+    modelSudoku: ModelSudoku,
     index: Int,
     row: Int,
     colum: Int
 ): Color {
     val colorTextOnSelectedLine = MaterialTheme.colorScheme.onPrimary
+    val errorColor = Color.Red// todo need delete
     return when {
-        index == itemCell?.selectedCellIndex -> colorTextOnSelectedLine
-        row == itemCell?.selectedRow -> colorTextOnSelectedLine
-        colum == itemCell?.selectedCol -> colorTextOnSelectedLine
+        modelSudoku.listItemCell[index].startedValue != modelSudoku.listItemCell[index].setValue -> errorColor
+        index == modelSudoku.selectedCell?.selectedCellIndex -> colorTextOnSelectedLine
+        row == modelSudoku.selectedCell?.selectedRow -> colorTextOnSelectedLine
+        colum == modelSudoku.selectedCell?.selectedCol -> colorTextOnSelectedLine
         else -> Color.Unspecified
     }
 }

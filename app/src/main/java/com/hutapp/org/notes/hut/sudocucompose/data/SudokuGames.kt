@@ -1,5 +1,6 @@
 package com.hutapp.org.notes.hut.sudocucompose.data
 
+import android.util.Log
 import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ItemCell
 import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ModelSudoku
 
@@ -28,6 +29,7 @@ class SudokuGames {
 
         val newListCells = modelSudoku.listItemCell
             .map { itemCell ->
+                Log.d("TAG2", "selectedCell: @selectedItem $itemCell")
                 when {
                     itemCell.isSelected -> itemCell.copy(isSelected = false)
                     itemCell.selectedCellIndex == index -> {
@@ -37,6 +39,7 @@ class SudokuGames {
                             isSelected = isSelected
                         )
                         selectedItem = newItem
+
                         newItem
                     }
 
@@ -50,6 +53,10 @@ class SudokuGames {
     fun setValueInCell(value: Int, modelSudoku: ModelSudoku): ModelSudoku {
         val newList = modelSudoku.listItemCell.map { itemCell ->
             if (itemCell.isSelected) {
+                Log.d(
+                    "TAG1",
+                    "setValueInCell: set ${value} ref ${itemCell.startedValue}"
+                )
                 itemCell.copy(setValue = value)
             } else
                 itemCell
@@ -64,6 +71,7 @@ class SudokuGames {
             val isStartedCell = ((0..level).random()) > 0
             ItemCell(
                 startedValue = value,
+                setValue = if (isStartedCell) value else -1,
                 isStartedCell = isStartedCell,
                 selectedCellIndex = index
             )
