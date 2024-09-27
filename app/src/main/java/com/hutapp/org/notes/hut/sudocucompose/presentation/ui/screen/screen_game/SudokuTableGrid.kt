@@ -51,13 +51,6 @@ fun SudokuTableGrid(
                                         color = colorGrid
                                     )
                                     .aspectRatio(1f)
-                                    .background(
-                                        color = getColorBackgroundGrandGrid(
-                                            stateFromViewModel.modelSudoku.selectedCell,
-                                            row,
-                                            colum,
-                                        )
-                                    )
                             )
                         }
                     }
@@ -93,6 +86,7 @@ fun SudokuTableGrid(
                                             .modelSudoku
                                             .listItemCell
                                             .indexOf(itemModelSudoku)
+
                                         onCellClickListener(
                                             indexCell,
                                             row,
