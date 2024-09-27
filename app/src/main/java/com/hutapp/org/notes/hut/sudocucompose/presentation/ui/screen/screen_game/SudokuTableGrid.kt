@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ColorEnum
 import com.hutapp.org.notes.hut.sudocucompose.presentation.CellViewModel
 
 // sudoku table ________________________________________________________________________________
@@ -68,12 +69,23 @@ fun SudokuTableGrid(
                                     .weight(1f)
                                     .fillMaxSize()
                                     .background(
-                                        getColorBoxBackground(
-                                            modelSudoku = stateFromViewModel.modelSudoku,
-                                            index = index,
-                                            row = row,
-                                            colum = colum,
-                                        )
+                                        with(MaterialTheme.colorScheme) {
+                                            when (itemModelSudoku.color) {
+                                                ColorEnum.UNSELECTED ->
+                                                    Color.Unspecified
+
+                                                ColorEnum.SELECTED_CELL ->
+                                                    primary
+
+                                                ColorEnum.SELECT_LINE ->
+                                                    primary.copy(alpha = 0.4f)
+
+                                                ColorEnum.COLOR_STARTED_CELL ->
+                                                    onBackground.copy(alpha = 0.1f)
+
+                                            }
+                                        }
+
                                     )
                                     .border(
                                         width = 0.1.dp,

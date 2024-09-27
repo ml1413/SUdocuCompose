@@ -1,6 +1,7 @@
 package com.hutapp.org.notes.hut.sudocucompose.data
 
 import android.util.Log
+import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ColorEnum
 import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ItemCell
 import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ModelSudoku
 
@@ -25,15 +26,32 @@ class SudokuGames {
         selectedColum: Int,
         isSelected: Boolean
     ): ModelSudoku {
+
         var selectedItem: ItemCell? = null
 
         val newListCells = modelSudoku.listItemCell
             .map { itemCell ->
-                Log.d("TAG2", "selectedCell: @selectedItem $itemCell")
                 when {
-                    itemCell.isSelected -> itemCell.copy(isSelected = false)
+                    itemCell.isSelected -> itemCell.copy(
+                        isSelected = false,
+                        color = ColorEnum.UNSELECTED
+                    )
+
+                    itemCell.isStartedCell -> {
+                        itemCell.copy(color = ColorEnum.COLOR_STARTED_CELL)
+                    }
+
+                    !itemCell.isStartedCell -> {
+                        itemCell.copy(color = ColorEnum.UNSELECTED)
+                    }
+
+                    else -> itemCell
+                }
+            }.map { itemCell ->
+                when {
                     itemCell.selectedCellIndex == index -> {
                         val newItem = itemCell.copy(
+                            color = ColorEnum.SELECTED_CELL,
                             selectedCol = selectedColum,
                             selectedRow = selectedRow,
                             isSelected = isSelected
@@ -41,6 +59,14 @@ class SudokuGames {
                         selectedItem = newItem
 
                         newItem
+                    }
+
+                    itemCell.selectedRow == selectedRow -> {
+                        itemCell.copy(color = ColorEnum.SELECT_LINE)
+                    }
+
+                    itemCell.selectedCol == selectedColum -> {
+                        itemCell.copy(color = ColorEnum.SELECT_LINE)
                     }
 
                     else -> itemCell
@@ -67,16 +93,28 @@ class SudokuGames {
     /**generate list<Int>________________________________________________________________________ */
     fun getListModelSudoku(level: Int = 1): ModelSudoku {
         // map list<Int> to List<ModelSudoku>
-        val listItemCell = generateSudoku().mapIndexed { index, value ->
-            val isStartedCell = ((0..level).random()) > 0
-            ItemCell(
-                startedValue = value,
-                setValue = if (isStartedCell) value else -1,
-                isStartedCell = isStartedCell,
-                selectedCellIndex = index
-            )
+        val genList = generateSudoku()
+        val newList = mutableListOf<ItemCell>()
+        var ind = 0
+        for (colum in 1..9) {
+            for (row in 1..9) {
+                val isStartedCell = ((0..level).random()) > 0
+                val value = genList[ind]
+                val itemCell = ItemCell(
+                    startedValue = value,
+                    setValue = if (isStartedCell) value else -1,
+                    isStartedCell = isStartedCell,
+                    selectedRow = row,
+                    selectedCol = colum,
+                    selectedCellIndex = ind,
+                    color = if (isStartedCell) ColorEnum.COLOR_STARTED_CELL else ColorEnum.UNSELECTED
+                )
+                newList.add(itemCell)
+                ind++
+            }
         }
-        return ModelSudoku(listItemCell = listItemCell)
+
+        return ModelSudoku(listItemCell = newList)
     }
 
 
