@@ -2,6 +2,7 @@ package com.hutapp.org.notes.hut.sudocucompose.domain.moles
 
 data class ModelSudoku(
     val isVictory: Boolean = false,
+    val isHideSelected: Boolean = true,
     val listItemCell: List<ItemCell>
 )
 

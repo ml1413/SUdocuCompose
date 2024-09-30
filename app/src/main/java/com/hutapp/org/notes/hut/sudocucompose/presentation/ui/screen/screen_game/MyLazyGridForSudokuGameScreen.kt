@@ -6,15 +6,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.hutapp.org.notes.hut.sudocucompose.presentation.CellViewModel
+import kotlinx.coroutines.delay
 
 
 @Composable
@@ -27,7 +26,11 @@ fun MyLazyGridForSudokuGameScreen(
         cellViewModel.selectedCell.observeAsState(CellViewModel.GameState.Initial)
 
     val stateFromViewModel = sudokuViewModelState.value
+
     if (stateFromViewModel is CellViewModel.GameState.ResumeGame) {
+        // hide selected after 20 t and seconds_____________________________________________________
+        HideSelected(stateFromViewModel = stateFromViewModel, cellViewModel = cellViewModel)
+        //__________________________________________________________________________________________
         val colorGrid = MaterialTheme.colorScheme.onBackground
         Box(
             modifier = modifier
@@ -59,18 +62,22 @@ fun MyLazyGridForSudokuGameScreen(
                         cellViewModel.setValueInCell(value = value)
                     }
                 )
-                /**   *///todo need delete
-                Button(
-                    onClick = {
-                        cellViewModel.unselectedCell()
-                    }
-                ) {
-                    Text("unselected")
-                }
-                /**   */
             }
         }
     } else if (stateFromViewModel is CellViewModel.GameState.Victory) {
         navigateOnScreenVictory()
+    }
+}
+
+@Composable
+private fun HideSelected(
+    stateFromViewModel: CellViewModel.GameState.ResumeGame,
+    cellViewModel: CellViewModel
+) {
+    LaunchedEffect(stateFromViewModel) {
+        if (stateFromViewModel.modelSudoku.isHideSelected) {
+            delay(20_000)
+            cellViewModel.unselectedCell()
+        }
     }
 }

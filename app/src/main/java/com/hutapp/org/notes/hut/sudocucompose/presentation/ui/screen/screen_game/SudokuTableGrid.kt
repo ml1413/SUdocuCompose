@@ -29,7 +29,7 @@ fun SudokuTableGrid(
     modifier: Modifier,
     stateFromViewModel: CellViewModel.GameState.ResumeGame,
     colorGrid: Color,
-    onCellClickListener: (index: Int, selectedRow: Int, selectedColum: Int, isSelected: Boolean) -> Unit
+    onCellClickListener: (index: Int, selectedRow: Int, selectedColum: Int, isSelected: Boolean) -> Unit,
 ) {
     var index = 0
     Card(
