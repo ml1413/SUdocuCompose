@@ -17,8 +17,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ColorCellEnum
+import com.hutapp.org.notes.hut.sudocucompose.domain.moles.TextStyleEnum
 import com.hutapp.org.notes.hut.sudocucompose.presentation.CellViewModel
 
 // sudoku table ________________________________________________________________________________
@@ -112,15 +114,36 @@ fun SudokuTableGrid(
                             ) {
                                 val numForCell =
                                     getTestForCell(itemItemCell = itemModelSudoku)
-                                Text(
-                                    text = numForCell,
-                                    color = getColorTextForCell(
-                                        modelSudoku = stateFromViewModel.modelSudoku,
-                                        index = index,
-                                        row = row,
-                                        colum = colum,
-                                    )
-                                )
+                                when (itemModelSudoku.textStyle) {
+                                    TextStyleEnum.UNSELECTED -> {
+                                        Text(text = numForCell)
+                                    }
+
+                                    TextStyleEnum.ON_STARTED_CELL -> {
+                                        Text(text = numForCell, fontWeight = FontWeight.Bold)
+                                    }
+
+                                    TextStyleEnum.SELECTED_IN_CELL -> {
+                                        Text(
+                                            text = numForCell,
+                                            color = MaterialTheme.colorScheme.onPrimary
+                                        )
+                                    }
+
+                                    TextStyleEnum.ON_SELECTED_LINE_OR_BLOCK -> {
+                                        Text(
+                                            text = numForCell,
+                                            color = MaterialTheme.colorScheme.onPrimary
+                                        )
+                                    }
+
+                                    TextStyleEnum.ERROR -> {
+                                        Text(
+                                            text = numForCell,
+                                            color = Color.Red
+                                        )
+                                    }
+                                }
                                 index += 1
                             }
                         }

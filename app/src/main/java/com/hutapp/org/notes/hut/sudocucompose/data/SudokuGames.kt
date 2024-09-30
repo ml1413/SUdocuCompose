@@ -4,6 +4,7 @@ import android.util.Log
 import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ColorCellEnum
 import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ItemCell
 import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ModelSudoku
+import com.hutapp.org.notes.hut.sudocucompose.domain.moles.TextStyleEnum
 
 class SudokuGames {
     /**check all answer __________________________________________________________________________*/
@@ -28,23 +29,30 @@ class SudokuGames {
     ): ModelSudoku {
         val listIndexFromBlock = getIndexCellInSelectedBlock(index = index)
 
-        var selectedItem: ItemCell? = null //todo need delete
 
         val newListCells = modelSudoku.listItemCell
             .map { itemCell ->
                 // clear all selected reset color
+                Log.d("TAG1", "selectedCell: ")
                 when {
                     itemCell.isSelected -> itemCell.copy(
                         isSelected = false,
-                        colorCell = ColorCellEnum.UNSELECTED
+                        colorCell = ColorCellEnum.UNSELECTED,
+                        textStyle = TextStyleEnum.UNSELECTED
                     )
 
                     itemCell.isStartedCell -> {
-                        itemCell.copy(colorCell = ColorCellEnum.COLOR_STARTED_CELL)
+                        itemCell.copy(
+                            colorCell = ColorCellEnum.COLOR_STARTED_CELL,
+                            textStyle = TextStyleEnum.ON_STARTED_CELL
+                        )
                     }
 
                     !itemCell.isStartedCell -> {
-                        itemCell.copy(colorCell = ColorCellEnum.UNSELECTED)
+                        itemCell.copy(
+                            colorCell = ColorCellEnum.UNSELECTED,
+                            textStyle = TextStyleEnum.UNSELECTED
+                        )
                     }
 
                     else -> itemCell
@@ -53,44 +61,55 @@ class SudokuGames {
                 // set new color on cells
                 when {
                     itemCell.selectedCellIndex == index -> {
-                        val newItem = itemCell.copy(
-                            colorCell = ColorCellEnum.SELECTED_CELL,
+                        itemCell.copy(
                             selectedCol = selectedColum,
                             selectedRow = selectedRow,
-                            isSelected = isSelected
+                            isSelected = isSelected,
+                            colorCell = ColorCellEnum.SELECTED_CELL,
+                            textStyle = TextStyleEnum.ON_SELECTED_LINE_OR_BLOCK
                         )
-                        selectedItem = newItem
-
-                        newItem
                     }
 
-                    itemCell.selectedRow == selectedRow -> {
-                        itemCell.copy(colorCell = ColorCellEnum.SELECT_LINE)
-                    }
-
-                    itemCell.selectedCol == selectedColum -> {
-                        itemCell.copy(colorCell = ColorCellEnum.SELECT_LINE)
+                    itemCell.selectedCol == selectedColum || itemCell.selectedRow == selectedRow -> {
+                        itemCell.copy(
+                            colorCell = ColorCellEnum.SELECT_LINE,
+                            textStyle =
+                            if (itemCell.setValue == itemCell.startedValue)
+                                TextStyleEnum.ON_SELECTED_LINE_OR_BLOCK
+                            else
+                                TextStyleEnum.ERROR
+                        )
                     }
 
                     listIndexFromBlock.contains(itemCell.selectedCellIndex) -> {
-                        itemCell.copy(colorCell = ColorCellEnum.SELECTED_BLOCK)
+                        itemCell.copy(
+                            colorCell = ColorCellEnum.SELECTED_BLOCK,
+                            textStyle =
+                            if (itemCell.setValue == itemCell.startedValue)
+                                TextStyleEnum.ON_SELECTED_LINE_OR_BLOCK
+                            else
+                                TextStyleEnum.ERROR
+                        )
+                    }
+
+                    itemCell.setValue != itemCell.startedValue -> {
+                        itemCell.copy(textStyle = TextStyleEnum.ERROR)
                     }
 
                     else -> itemCell
                 }
             }
-        return modelSudoku.copy(listItemCell = newListCells, selectedCell = selectedItem)
+        return modelSudoku.copy(listItemCell = newListCells)
     }
 
     /**Set value in cell ________________________________________________________________________*/
     fun setValueInCell(value: Int, modelSudoku: ModelSudoku): ModelSudoku {
         val newList = modelSudoku.listItemCell.map { itemCell ->
             if (itemCell.isSelected) {
-                Log.d(
-                    "TAG1",
-                    "setValueInCell: set ${value} ref ${itemCell.startedValue}"
+
+                itemCell.copy(
+                    setValue = value
                 )
-                itemCell.copy(setValue = value)
             } else
                 itemCell
         }
