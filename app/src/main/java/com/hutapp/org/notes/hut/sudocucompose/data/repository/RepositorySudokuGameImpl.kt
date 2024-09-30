@@ -32,4 +32,8 @@ class RepositorySudokuGameImpl(private val sudokuGames: SudokuGames) : Repositor
     override fun checkAllAnswer(modelSudoku: ModelSudoku): ModelSudoku {
         return sudokuGames.checkAllAnswer(modelSudoku = modelSudoku)
     }
+
+    override fun unselectedCell(modelSudoku: ModelSudoku): ModelSudoku {
+        return sudokuGames.unselectedCell(modelSudoku = modelSudoku)
+    }
 }

@@ -6,13 +6,15 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.hutapp.org.notes.hut.sudocucompose.presentation.CellViewModel
-import com.hutapp.org.notes.hut.sudocucompose.presentation.ui.screen.screen_result.ScreenVictory
 
 
 @Composable
@@ -57,6 +59,15 @@ fun MyLazyGridForSudokuGameScreen(
                         cellViewModel.setValueInCell(value = value)
                     }
                 )
+                /**   *///todo need delete
+                Button(
+                    onClick = {
+                        cellViewModel.unselectedCell()
+                    }
+                ) {
+                    Text("unselected")
+                }
+                /**   */
             }
         }
     } else if (stateFromViewModel is CellViewModel.GameState.Victory) {

@@ -1,6 +1,5 @@
 package com.hutapp.org.notes.hut.sudocucompose.data
 
-import android.util.Log
 import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ColorCellEnum
 import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ItemCell
 import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ModelSudoku
@@ -19,6 +18,13 @@ class SudokuGames {
         else modelSudoku
     }
 
+    /** unselected cell___________________________________________________________________________*/
+
+    fun unselectedCell(modelSudoku: ModelSudoku): ModelSudoku {
+        val newListCells = getListUnselectedItem(modelSudoku)
+        return modelSudoku.copy(listItemCell = newListCells)
+    }
+
     /** selected cell fun_________________________________________________________________________*/
     fun selectedCell(
         modelSudoku: ModelSudoku,
@@ -29,35 +35,14 @@ class SudokuGames {
     ): ModelSudoku {
         val listIndexFromBlock = getIndexCellInSelectedBlock(index = index)
 
-
-        val newListCells = modelSudoku.listItemCell
+        val newListCells = getListUnselectedItem(modelSudoku = modelSudoku)
             .map { itemCell ->
-                // clear all selected reset color
-                Log.d("TAG1", "selectedCell: ")
-                when {
-                    itemCell.isSelected -> itemCell.copy(
-                        isSelected = false,
-                        colorCell = ColorCellEnum.UNSELECTED,
-                        textStyle = TextStyleEnum.UNSELECTED
-                    )
-
-                    itemCell.isStartedCell -> {
-                        itemCell.copy(
-                            colorCell = ColorCellEnum.COLOR_STARTED_CELL,
-                            textStyle = TextStyleEnum.ON_STARTED_CELL
-                        )
-                    }
-
-                    !itemCell.isStartedCell -> {
-                        itemCell.copy(
-                            colorCell = ColorCellEnum.UNSELECTED,
-                            textStyle = TextStyleEnum.UNSELECTED
-                        )
-                    }
-
-                    else -> itemCell
-                }
-            }.map { itemCell ->
+                // text style for text on cell (if error color red)
+                val textStyleErrorOrNot =
+                    if (itemCell.setValue == itemCell.startedValue)
+                        TextStyleEnum.ON_SELECTED_LINE_OR_BLOCK
+                    else
+                        TextStyleEnum.ERROR
                 // set new color on cells
                 when {
                     itemCell.selectedCellIndex == index -> {
@@ -73,22 +58,14 @@ class SudokuGames {
                     itemCell.selectedCol == selectedColum || itemCell.selectedRow == selectedRow -> {
                         itemCell.copy(
                             colorCell = ColorCellEnum.SELECT_LINE,
-                            textStyle =
-                            if (itemCell.setValue == itemCell.startedValue)
-                                TextStyleEnum.ON_SELECTED_LINE_OR_BLOCK
-                            else
-                                TextStyleEnum.ERROR
+                            textStyle = textStyleErrorOrNot
                         )
                     }
 
                     listIndexFromBlock.contains(itemCell.selectedCellIndex) -> {
                         itemCell.copy(
                             colorCell = ColorCellEnum.SELECTED_BLOCK,
-                            textStyle =
-                            if (itemCell.setValue == itemCell.startedValue)
-                                TextStyleEnum.ON_SELECTED_LINE_OR_BLOCK
-                            else
-                                TextStyleEnum.ERROR
+                            textStyle = textStyleErrorOrNot
                         )
                     }
 
@@ -189,27 +166,66 @@ class SudokuGames {
         }
         return true
     }
-}
 
-/** Other fun ____________________________________________________________________________________*/
-private fun getIndexCellInSelectedBlock(index: Int): List<Int> {
-    // Ширина и высота сетки судоку
-    val gridSize = 9
-    val blockSize = 3
 
-    // Вычисляем строку и столбец ячейки
-    val rowLine = index / gridSize
-    val colLine = index % gridSize
+    /** Other fun ____________________________________________________________________________________*/
+    private fun getIndexCellInSelectedBlock(index: Int): List<Int> {
+        // Ширина и высота сетки судоку
+        val gridSize = 9
+        val blockSize = 3
 
-    // Вычисляем левый верхний угол блока
-    val blockRowStart = (rowLine / blockSize) * blockSize
-    val blockColStart = (colLine / blockSize) * blockSize
+        // Вычисляем строку и столбец ячейки
+        val rowLine = index / gridSize
+        val colLine = index % gridSize
 
-    val blockIndices = mutableListOf<Int>()
-    for (r in blockRowStart until blockRowStart + blockSize) {
-        for (c in blockColStart until blockColStart + blockSize) {
-            blockIndices.add(r * gridSize + c)
+        // Вычисляем левый верхний угол блока
+        val blockRowStart = (rowLine / blockSize) * blockSize
+        val blockColStart = (colLine / blockSize) * blockSize
+
+        val blockIndices = mutableListOf<Int>()
+        for (r in blockRowStart until blockRowStart + blockSize) {
+            for (c in blockColStart until blockColStart + blockSize) {
+                blockIndices.add(r * gridSize + c)
+            }
         }
+        return blockIndices.toList()
+
     }
-    return blockIndices.toList()
+
+    private fun getListUnselectedItem(modelSudoku: ModelSudoku): List<ItemCell> {
+        val newListCells = modelSudoku.listItemCell
+            .map { itemCell ->
+                // text style for text on cell (if error color red)
+                val textStyleErrorOrNot =
+                    if (itemCell.setValue == itemCell.startedValue)
+                        TextStyleEnum.ON_SELECTED_LINE_OR_BLOCK
+                    else
+                        TextStyleEnum.ERROR
+                // clear all selected reset color
+                when {
+                    itemCell.isSelected -> itemCell.copy(
+                        isSelected = false,
+                        colorCell = ColorCellEnum.UNSELECTED,
+                        textStyle = TextStyleEnum.UNSELECTED
+                    )
+
+                    itemCell.isStartedCell -> {
+                        itemCell.copy(
+                            colorCell = ColorCellEnum.COLOR_STARTED_CELL,
+                            textStyle = TextStyleEnum.ON_STARTED_CELL
+                        )
+                    }
+
+                    !itemCell.isStartedCell -> {
+                        itemCell.copy(
+                            colorCell = ColorCellEnum.UNSELECTED,
+                            textStyle = textStyleErrorOrNot
+                        )
+                    }
+
+                    else -> itemCell
+                }
+            }
+        return newListCells
+    }
 }

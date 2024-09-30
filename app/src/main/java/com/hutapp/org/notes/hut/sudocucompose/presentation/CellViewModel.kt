@@ -10,19 +10,22 @@ import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.CheckAllAnswerUseCas
 import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.GetListForStartedUseCase
 import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.SelectedCellUseCase
 import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.SetValueInCellUseCase
+import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.UnSelectedCellUseCase
 
 class CellViewModel : ViewModel() {
     // todo need inject
     private val sudokuGames = SudokuGames()
     private val repositorySudokuGameImpl = RepositorySudokuGameImpl(sudokuGames)
     private val getModelSudokuUseCase =
-        SelectedCellUseCase(repositorySudokuGameImpl = repositorySudokuGameImpl)
+        SelectedCellUseCase(repositorySudokuGame = repositorySudokuGameImpl)
     private val getListForStartedUseCase =
         GetListForStartedUseCase(repositorySudokuGame = repositorySudokuGameImpl)
     private val setValueInCellUseCase =
-        SetValueInCellUseCase(repositorySudokuGameImpl = repositorySudokuGameImpl)
+        SetValueInCellUseCase(repositorySudokuGame = repositorySudokuGameImpl)
     private val checkAllAnswerUseCase =
         CheckAllAnswerUseCase(repositorySudokuGame = repositorySudokuGameImpl)
+    private val unSelectedCellUseCase =
+        UnSelectedCellUseCase(repositorySudokuGame = repositorySudokuGameImpl)
 
     private val _selectedCell = MutableLiveData<GameState>(GameState.Initial)
     val selectedCell: LiveData<GameState> = _selectedCell
@@ -56,6 +59,15 @@ class CellViewModel : ViewModel() {
             val isAllAnswerCorrect = checkAllAnswerUseCase(modelSudoku = newModelSudoku)
             checkIsVictory(isAllAnswerCorrect, newModelSudoku)
         }
+    }
+
+    fun unselectedCell() {
+        val stateGame = _selectedCell.value
+        if (stateGame is GameState.ResumeGame) {
+            val newModelSudoku = unSelectedCellUseCase(modelSudoku = stateGame.modelSudoku)
+            _selectedCell.value = GameState.ResumeGame(modelSudoku = newModelSudoku)
+        }
+
     }
 
 
