@@ -14,9 +14,14 @@ data class ItemCell(
     val selectedCellIndex: Int = -1,
     val selectedRow: Int = -1,
     val selectedCol: Int = -1,
-    val color: ColorEnum = ColorEnum.UNSELECTED
+    val colorCell: ColorCellEnum = ColorCellEnum.UNSELECTED,
+    val colorText: ColorTextEnum = ColorTextEnum.UNSELECTED
 )
 
-enum class ColorEnum() {
-    UNSELECTED, SELECTED_CELL, SELECT_LINE,COLOR_STARTED_CELL
+enum class ColorCellEnum() {
+    UNSELECTED, SELECTED_CELL, SELECT_LINE, COLOR_STARTED_CELL, SELECTED_BLOCK
+}
+
+enum class ColorTextEnum {
+    UNSELECTED, ON_STARTED, SELECTED_IN_CELL, ON_SELECTED_LINE_OR_BLOCK, ERROR
 }

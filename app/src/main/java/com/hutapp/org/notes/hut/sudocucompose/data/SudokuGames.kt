@@ -1,7 +1,7 @@
 package com.hutapp.org.notes.hut.sudocucompose.data
 
 import android.util.Log
-import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ColorEnum
+import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ColorCellEnum
 import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ItemCell
 import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ModelSudoku
 
@@ -26,32 +26,35 @@ class SudokuGames {
         selectedColum: Int,
         isSelected: Boolean
     ): ModelSudoku {
+        val listIndexFromBlock = getIndexCellInSelectedBlock(index = index)
 
-        var selectedItem: ItemCell? = null
+        var selectedItem: ItemCell? = null //todo need delete
 
         val newListCells = modelSudoku.listItemCell
             .map { itemCell ->
+                // clear all selected reset color
                 when {
                     itemCell.isSelected -> itemCell.copy(
                         isSelected = false,
-                        color = ColorEnum.UNSELECTED
+                        colorCell = ColorCellEnum.UNSELECTED
                     )
 
                     itemCell.isStartedCell -> {
-                        itemCell.copy(color = ColorEnum.COLOR_STARTED_CELL)
+                        itemCell.copy(colorCell = ColorCellEnum.COLOR_STARTED_CELL)
                     }
 
                     !itemCell.isStartedCell -> {
-                        itemCell.copy(color = ColorEnum.UNSELECTED)
+                        itemCell.copy(colorCell = ColorCellEnum.UNSELECTED)
                     }
 
                     else -> itemCell
                 }
             }.map { itemCell ->
+                // set new color on cells
                 when {
                     itemCell.selectedCellIndex == index -> {
                         val newItem = itemCell.copy(
-                            color = ColorEnum.SELECTED_CELL,
+                            colorCell = ColorCellEnum.SELECTED_CELL,
                             selectedCol = selectedColum,
                             selectedRow = selectedRow,
                             isSelected = isSelected
@@ -62,11 +65,15 @@ class SudokuGames {
                     }
 
                     itemCell.selectedRow == selectedRow -> {
-                        itemCell.copy(color = ColorEnum.SELECT_LINE)
+                        itemCell.copy(colorCell = ColorCellEnum.SELECT_LINE)
                     }
 
                     itemCell.selectedCol == selectedColum -> {
-                        itemCell.copy(color = ColorEnum.SELECT_LINE)
+                        itemCell.copy(colorCell = ColorCellEnum.SELECT_LINE)
+                    }
+
+                    listIndexFromBlock.contains(itemCell.selectedCellIndex) -> {
+                        itemCell.copy(colorCell = ColorCellEnum.SELECTED_BLOCK)
                     }
 
                     else -> itemCell
@@ -107,7 +114,7 @@ class SudokuGames {
                     selectedRow = row,
                     selectedCol = colum,
                     selectedCellIndex = ind,
-                    color = if (isStartedCell) ColorEnum.COLOR_STARTED_CELL else ColorEnum.UNSELECTED
+                    colorCell = if (isStartedCell) ColorCellEnum.COLOR_STARTED_CELL else ColorCellEnum.UNSELECTED
                 )
                 newList.add(itemCell)
                 ind++
@@ -163,4 +170,27 @@ class SudokuGames {
         }
         return true
     }
+}
+
+/** Other fun ____________________________________________________________________________________*/
+private fun getIndexCellInSelectedBlock(index: Int): List<Int> {
+    // Ширина и высота сетки судоку
+    val gridSize = 9
+    val blockSize = 3
+
+    // Вычисляем строку и столбец ячейки
+    val rowLine = index / gridSize
+    val colLine = index % gridSize
+
+    // Вычисляем левый верхний угол блока
+    val blockRowStart = (rowLine / blockSize) * blockSize
+    val blockColStart = (colLine / blockSize) * blockSize
+
+    val blockIndices = mutableListOf<Int>()
+    for (r in blockRowStart until blockRowStart + blockSize) {
+        for (c in blockColStart until blockColStart + blockSize) {
+            blockIndices.add(r * gridSize + c)
+        }
+    }
+    return blockIndices.toList()
 }
