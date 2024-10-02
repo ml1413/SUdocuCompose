@@ -25,6 +25,13 @@ class RepositorySudokuGameImpl @Inject constructor
         )
     }
 
+    override fun onOffHideSelectedLineOnField(
+        isHide: Boolean,
+        modelSudoku: ModelSudoku
+    ): ModelSudoku {
+        return sudokuGames.onOffHideSelectedLineOnField(isHide = isHide, modelSudoku = modelSudoku)
+    }
+
     override fun getListForStated(): ModelSudoku {
         return sudokuGames.getListModelSudoku()
     }

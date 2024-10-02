@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ModelSudoku
 import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.CheckAllAnswerUseCase
 import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.GetListForStartedUseCase
+import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.OnOffHideSelectedLineOnFieldUseCase
 import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.SelectedCellUseCase
 import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.SetValueInCellUseCase
 import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.UnSelectedCellUseCase
@@ -18,7 +19,8 @@ class CellViewModel @Inject constructor(
     private val getModelSudokuUseCase: SelectedCellUseCase,
     private val setValueInCellUseCase: SetValueInCellUseCase,
     private val checkAllAnswerUseCase: CheckAllAnswerUseCase,
-    private val unSelectedCellUseCase: UnSelectedCellUseCase
+    private val unSelectedCellUseCase: UnSelectedCellUseCase,
+    private val onOffHideSelectedLineOnFieldUseCase: OnOffHideSelectedLineOnFieldUseCase
 ) : ViewModel() {
 
 
@@ -63,6 +65,17 @@ class CellViewModel @Inject constructor(
             _selectedCell.value = GameState.ResumeGame(modelSudoku = newModelSudoku)
         }
 
+    }
+
+    fun onOffHideSelected(isHide: Boolean) {
+        val state = _selectedCell.value
+        if (state is GameState.ResumeGame) {
+            val newModel = onOffHideSelectedLineOnFieldUseCase(
+                isHide = isHide,
+                modelSudoku = state.modelSudoku
+            )
+            _selectedCell.value = GameState.ResumeGame(modelSudoku = newModel)
+        }
     }
 
 

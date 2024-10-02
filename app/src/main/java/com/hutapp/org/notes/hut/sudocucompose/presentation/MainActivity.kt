@@ -13,6 +13,7 @@ import com.hutapp.org.notes.hut.sudocucompose.presentation.ui.screen.navigation.
 import com.hutapp.org.notes.hut.sudocucompose.presentation.ui.screen.navigation.Screens
 import com.hutapp.org.notes.hut.sudocucompose.presentation.ui.screen.screen_game.MyLazyGridForSudokuGameScreen
 import com.hutapp.org.notes.hut.sudocucompose.presentation.ui.screen.screen_result.ScreenVictory
+import com.hutapp.org.notes.hut.sudocucompose.presentation.ui.screen.started_screen.StartedScreen
 import com.hutapp.org.notes.hut.sudocucompose.presentation.ui.theme.SUdocuComposeTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -33,13 +34,23 @@ class MainActivity : ComponentActivity() {
                         navController = navHostController,
                         screenGameContent = {
                             MyLazyGridForSudokuGameScreen(
-                                cellViewModel = cellViewModel,
+                                cellViewModel = cellViewModel,// todo need refactor
                                 navigateOnScreenVictory = {
                                     navHostController.navigate(Screens.Victory.route)
                                 })
                         },
                         screenVictory = {
                             ScreenVictory()
+                        },
+                        screenStartedContent = {
+                            StartedScreen(
+                                onChecked = { isHide ->
+                                    cellViewModel.onOffHideSelected(isHide = isHide)
+                                },
+                                onButtonClickListener = {
+                                    navHostController.navigate(Screens.Game.route)
+                                }
+                            )
                         }
                     )
                 }

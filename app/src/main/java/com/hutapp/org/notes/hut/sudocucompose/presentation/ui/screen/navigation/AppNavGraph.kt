@@ -8,15 +8,18 @@ import androidx.navigation.compose.composable
 
 @Composable
 fun AppNavGraph(
-    modifier: Modifier = Modifier,
     navController: NavHostController,
+    screenStartedContent: @Composable () -> Unit,
     screenGameContent: @Composable () -> Unit,
     screenVictory: @Composable () -> Unit
 ) {
     NavHost(
         navController = navController,
-        startDestination = Screens.Game.route,
+        startDestination = Screens.Started.route,
         builder = {
+            composable(Screens.Started.route) {
+                screenStartedContent()
+            }
             composable(Screens.Game.route) {
                 screenGameContent()
             }

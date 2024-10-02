@@ -6,7 +6,7 @@ interface RepositorySudokuGame {
     fun getListForStated(): ModelSudoku
     fun setValueInCell(value: Int, modelSudoku: ModelSudoku): ModelSudoku
     fun checkAllAnswer(modelSudoku: ModelSudoku): ModelSudoku
-    fun unselectedCell(modelSudoku: ModelSudoku):ModelSudoku
+    fun unselectedCell(modelSudoku: ModelSudoku): ModelSudoku
     fun selectedCell(
         modelSudoku: ModelSudoku,
         index: Int,
@@ -14,4 +14,6 @@ interface RepositorySudokuGame {
         selectedColum: Int,
         isSelected: Boolean
     ): ModelSudoku
+
+    fun onOffHideSelectedLineOnField(isHide: Boolean, modelSudoku: ModelSudoku): ModelSudoku
 }

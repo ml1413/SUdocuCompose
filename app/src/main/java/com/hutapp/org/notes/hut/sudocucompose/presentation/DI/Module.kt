@@ -5,6 +5,7 @@ import com.hutapp.org.notes.hut.sudocucompose.data.repository.RepositorySudokuGa
 import com.hutapp.org.notes.hut.sudocucompose.domain.repository.RepositorySudokuGame
 import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.CheckAllAnswerUseCase
 import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.GetListForStartedUseCase
+import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.OnOffHideSelectedLineOnFieldUseCase
 import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.SelectedCellUseCase
 import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.SetValueInCellUseCase
 import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.UnSelectedCellUseCase
@@ -48,8 +49,14 @@ class Module {
     fun provideSetValueInCellUseCase(repositorySudokuGame: RepositorySudokuGame): SetValueInCellUseCase {
         return SetValueInCellUseCase(repositorySudokuGame = repositorySudokuGame)
     }
+
     @Provides
     fun provideUnSelectedCellUseCase(repositorySudokuGame: RepositorySudokuGame): UnSelectedCellUseCase {
         return UnSelectedCellUseCase(repositorySudokuGame = repositorySudokuGame)
+    }
+
+    @Provides
+    fun provideOnOffHideSelectedLineOnFieldUseCase(repositorySudokuGame: RepositorySudokuGame): OnOffHideSelectedLineOnFieldUseCase {
+        return OnOffHideSelectedLineOnFieldUseCase(repositorySudokuGame = repositorySudokuGame)
     }
 }

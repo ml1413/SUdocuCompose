@@ -1,5 +1,6 @@
 package com.hutapp.org.notes.hut.sudocucompose.data
 
+import androidx.compose.runtime.rememberUpdatedState
 import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ColorCellEnum
 import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ItemCell
 import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ModelSudoku
@@ -7,6 +8,11 @@ import com.hutapp.org.notes.hut.sudocucompose.domain.moles.TextStyleEnum
 import javax.inject.Inject
 
 class SudokuGames @Inject constructor() {
+    /** on off hide selected line__________________________________________________________________*/
+    fun onOffHideSelectedLineOnField(isHide: Boolean, modelSudoku: ModelSudoku): ModelSudoku {
+        return modelSudoku.copy(isHideSelected = isHide)
+    }
+
     /**check all answer __________________________________________________________________________*/
     fun checkAllAnswer(modelSudoku: ModelSudoku): ModelSudoku {
         // check if all answer(setValue) == correctAnswer(startedValue)  =  true
