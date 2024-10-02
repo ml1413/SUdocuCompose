@@ -1,6 +1,5 @@
 package com.hutapp.org.notes.hut.sudocucompose.data
 
-import androidx.compose.runtime.rememberUpdatedState
 import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ColorCellEnum
 import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ItemCell
 import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ModelSudoku
@@ -47,9 +46,15 @@ class SudokuGames @Inject constructor() {
                 // text style for text on cell (if error color red)
                 val textStyleErrorOrNot =
                     if (itemCell.setValue == itemCell.startedValue)
-                        TextStyleEnum.ON_SELECTED_LINE_OR_BLOCK
+                    //text on line vertical horizontal or block if is started text BOLD
+                        if (itemCell.isStartedCell)
+                            TextStyleEnum.ON_SELECTED_LINE_OR_BLOCK_STARTED
+                        else
+                            TextStyleEnum.ON_SELECTED_LINE_OR_BLOCK_NO_STARTED
+                    //__________________________________________________________________
                     else
                         TextStyleEnum.ERROR
+
                 // set new color on cells
                 when {
                     itemCell.selectedCellIndex == index -> {
@@ -58,7 +63,7 @@ class SudokuGames @Inject constructor() {
                             selectedRow = selectedRow,
                             isSelected = isSelected,
                             colorCell = ColorCellEnum.SELECTED_CELL,
-                            textStyle = TextStyleEnum.ON_SELECTED_LINE_OR_BLOCK
+                            textStyle = TextStyleEnum.ON_SELECTED_LINE_OR_BLOCK_NO_STARTED
                         )
                     }
 
@@ -117,7 +122,8 @@ class SudokuGames @Inject constructor() {
                     selectedRow = row,
                     selectedCol = colum,
                     selectedCellIndex = ind,
-                    colorCell = if (isStartedCell) ColorCellEnum.COLOR_STARTED_CELL else ColorCellEnum.UNSELECTED
+                    colorCell = if (isStartedCell) ColorCellEnum.COLOR_STARTED_CELL else ColorCellEnum.UNSELECTED,
+                    textStyle = TextStyleEnum.ON_STARTED_CELL
                 )
                 newList.add(itemCell)
                 ind++

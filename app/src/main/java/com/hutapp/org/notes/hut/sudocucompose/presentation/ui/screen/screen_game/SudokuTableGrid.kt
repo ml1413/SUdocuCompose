@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -18,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ColorCellEnum
 import com.hutapp.org.notes.hut.sudocucompose.domain.moles.TextStyleEnum
@@ -120,7 +122,10 @@ fun SudokuTableGrid(
                                     }
 
                                     TextStyleEnum.ON_STARTED_CELL -> {
-                                        Text(text = numForCell, fontWeight = FontWeight.Bold)
+                                        Text(
+                                            text = numForCell,
+                                            fontWeight = FontWeight.ExtraBold
+                                        )
                                     }
 
                                     TextStyleEnum.SELECTED_IN_CELL -> {
@@ -130,10 +135,19 @@ fun SudokuTableGrid(
                                         )
                                     }
 
-                                    TextStyleEnum.ON_SELECTED_LINE_OR_BLOCK -> {
+                                    TextStyleEnum.ON_SELECTED_LINE_OR_BLOCK_NO_STARTED -> {
                                         Text(
                                             text = numForCell,
                                             color = MaterialTheme.colorScheme.onPrimary
+                                        )
+                                    }
+
+
+                                    TextStyleEnum.ON_SELECTED_LINE_OR_BLOCK_STARTED -> {
+                                        Text(
+                                            text = numForCell,
+                                            color = MaterialTheme.colorScheme.onPrimary,
+                                            fontWeight = FontWeight.ExtraBold
                                         )
                                     }
 
@@ -153,3 +167,4 @@ fun SudokuTableGrid(
         }
     }
 }
+
