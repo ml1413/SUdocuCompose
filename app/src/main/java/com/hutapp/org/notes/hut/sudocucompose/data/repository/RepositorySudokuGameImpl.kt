@@ -3,8 +3,12 @@ package com.hutapp.org.notes.hut.sudocucompose.data.repository
 import com.hutapp.org.notes.hut.sudocucompose.data.SudokuGames
 import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ModelSudoku
 import com.hutapp.org.notes.hut.sudocucompose.domain.repository.RepositorySudokuGame
+import javax.inject.Inject
 
-class RepositorySudokuGameImpl(private val sudokuGames: SudokuGames) : RepositorySudokuGame {
+class RepositorySudokuGameImpl @Inject constructor
+    (
+    private val sudokuGames: SudokuGames
+) : RepositorySudokuGame {
     override fun selectedCell(
         modelSudoku: ModelSudoku,
         index: Int,

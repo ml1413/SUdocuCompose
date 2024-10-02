@@ -4,8 +4,9 @@ import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ColorCellEnum
 import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ItemCell
 import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ModelSudoku
 import com.hutapp.org.notes.hut.sudocucompose.domain.moles.TextStyleEnum
+import javax.inject.Inject
 
-class SudokuGames {
+class SudokuGames @Inject constructor() {
     /**check all answer __________________________________________________________________________*/
     fun checkAllAnswer(modelSudoku: ModelSudoku): ModelSudoku {
         // check if all answer(setValue) == correctAnswer(startedValue)  =  true
@@ -198,7 +199,7 @@ class SudokuGames {
                 // text style for text on cell (if error color red)
                 val textStyleErrorOrNot =
                     if (itemCell.setValue == itemCell.startedValue)
-                        TextStyleEnum.ON_SELECTED_LINE_OR_BLOCK
+                        TextStyleEnum.UNSELECTED
                     else
                         TextStyleEnum.ERROR
                 // clear all selected reset color

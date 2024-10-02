@@ -1,6 +1,8 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("kotlin-kapt")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -61,6 +63,10 @@ dependencies {
     //lifecycle-viewmodel
     //navigation-compose
     implementation("androidx.navigation:navigation-compose:2.8.1")
+    // hilt
+    implementation("com.google.dagger:hilt-android:2.52")
+    kapt("com.google.dagger:hilt-compiler:2.52")
+
 
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
     implementation("androidx.compose.ui:ui")

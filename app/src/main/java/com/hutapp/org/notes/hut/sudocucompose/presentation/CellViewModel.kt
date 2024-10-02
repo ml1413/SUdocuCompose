@@ -3,29 +3,24 @@ package com.hutapp.org.notes.hut.sudocucompose.presentation
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.hutapp.org.notes.hut.sudocucompose.data.SudokuGames
-import com.hutapp.org.notes.hut.sudocucompose.data.repository.RepositorySudokuGameImpl
 import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ModelSudoku
 import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.CheckAllAnswerUseCase
 import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.GetListForStartedUseCase
 import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.SelectedCellUseCase
 import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.SetValueInCellUseCase
 import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.UnSelectedCellUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class CellViewModel : ViewModel() {
-    // todo need inject
-    private val sudokuGames = SudokuGames()
-    private val repositorySudokuGameImpl = RepositorySudokuGameImpl(sudokuGames)
-    private val getModelSudokuUseCase =
-        SelectedCellUseCase(repositorySudokuGame = repositorySudokuGameImpl)
-    private val getListForStartedUseCase =
-        GetListForStartedUseCase(repositorySudokuGame = repositorySudokuGameImpl)
-    private val setValueInCellUseCase =
-        SetValueInCellUseCase(repositorySudokuGame = repositorySudokuGameImpl)
-    private val checkAllAnswerUseCase =
-        CheckAllAnswerUseCase(repositorySudokuGame = repositorySudokuGameImpl)
-    private val unSelectedCellUseCase =
-        UnSelectedCellUseCase(repositorySudokuGame = repositorySudokuGameImpl)
+@HiltViewModel
+class CellViewModel @Inject constructor(
+    getListForStartedUseCase: GetListForStartedUseCase,
+    private val getModelSudokuUseCase: SelectedCellUseCase,
+    private val setValueInCellUseCase: SetValueInCellUseCase,
+    private val checkAllAnswerUseCase: CheckAllAnswerUseCase,
+    private val unSelectedCellUseCase: UnSelectedCellUseCase
+) : ViewModel() {
+
 
     private val _selectedCell = MutableLiveData<GameState>(GameState.Initial)
     val selectedCell: LiveData<GameState> = _selectedCell
