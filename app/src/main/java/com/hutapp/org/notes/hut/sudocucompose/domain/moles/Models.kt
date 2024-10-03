@@ -2,7 +2,9 @@ package com.hutapp.org.notes.hut.sudocucompose.domain.moles
 
 data class ModelSudoku(
     val isVictory: Boolean = false,
+    val hasSelectedCells: Boolean = false,
     val isHideSelected: Boolean = false,
+    val isShowErrorAnswer: Boolean = false,
     val listItemCell: List<ItemCell>
 )
 
@@ -18,15 +20,3 @@ data class ItemCell(
     val textStyle: TextStyleEnum = TextStyleEnum.UNSELECTED
 )
 
-enum class ColorCellEnum() {
-    UNSELECTED, SELECTED_CELL, SELECT_LINE, COLOR_STARTED_CELL, SELECTED_BLOCK
-}
-
-enum class TextStyleEnum {
-    UNSELECTED,
-    ON_STARTED_CELL,
-    SELECTED_IN_CELL,
-    ON_SELECTED_LINE_OR_BLOCK_NO_STARTED,
-    ON_SELECTED_LINE_OR_BLOCK_STARTED,
-    ERROR
-}

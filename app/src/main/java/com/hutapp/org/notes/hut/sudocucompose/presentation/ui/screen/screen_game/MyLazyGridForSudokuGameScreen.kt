@@ -1,5 +1,6 @@
 package com.hutapp.org.notes.hut.sudocucompose.presentation.ui.screen.screen_game
 
+import android.util.Log
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,14 +23,10 @@ fun MyLazyGridForSudokuGameScreen(
     cellViewModel: CellViewModel,
     navigateOnScreenVictory: () -> Unit
 ) {
-    val sudokuViewModelState =
-        cellViewModel.selectedCell.observeAsState(CellViewModel.GameState.Initial)
-
-    val stateFromViewModel = sudokuViewModelState.value
-
-    if (stateFromViewModel is CellViewModel.GameState.ResumeGame) {
+    val sudokuViewModelState = cellViewModel.selectedCell.observeAsState().value
+    if (sudokuViewModelState is CellViewModel.GameState.ResumeGame) {
         // hide selected after 20 t and seconds_____________________________________________________
-        HideSelected(stateFromViewModel = stateFromViewModel, cellViewModel = cellViewModel)
+        HideSelected(stateFromViewModel = sudokuViewModelState, cellViewModel = cellViewModel)
         //__________________________________________________________________________________________
         val colorGrid = MaterialTheme.colorScheme.onBackground
         Box(
@@ -45,7 +42,7 @@ fun MyLazyGridForSudokuGameScreen(
             Column() {
                 SudokuTableGrid(
                     modifier = modifier,
-                    stateFromViewModel = stateFromViewModel,
+                    stateFromViewModel = sudokuViewModelState,
                     colorGrid = colorGrid,
                     onCellClickListener = { index, selectedRow, selectedColum, isSelected ->
                         cellViewModel.selectedCell(
@@ -64,7 +61,7 @@ fun MyLazyGridForSudokuGameScreen(
                 )
             }
         }
-    } else if (stateFromViewModel is CellViewModel.GameState.Victory) {
+    } else if (sudokuViewModelState is CellViewModel.GameState.Victory) {
         navigateOnScreenVictory()
     }
 }
@@ -74,8 +71,8 @@ private fun HideSelected(
     stateFromViewModel: CellViewModel.GameState.ResumeGame,
     cellViewModel: CellViewModel
 ) {
-    LaunchedEffect(stateFromViewModel) {
-        if (stateFromViewModel.modelSudoku.isHideSelected) {
+    if (stateFromViewModel.modelSudoku.isHideSelected && stateFromViewModel.modelSudoku.hasSelectedCells) {
+        LaunchedEffect(stateFromViewModel) {
             delay(20_000)
             cellViewModel.unselectedCell()
         }

@@ -1,5 +1,6 @@
 package com.hutapp.org.notes.hut.sudocucompose.data
 
+import android.util.Log
 import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ColorCellEnum
 import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ItemCell
 import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ModelSudoku
@@ -9,6 +10,7 @@ import javax.inject.Inject
 class SudokuGames @Inject constructor() {
     /** on off hide selected line__________________________________________________________________*/
     fun onOffHideSelectedLineOnField(isHide: Boolean, modelSudoku: ModelSudoku): ModelSudoku {
+        Log.d("TAG1", "onOffHideSelectedLineOnField: ")
         return modelSudoku.copy(isHideSelected = isHide)
     }
 
@@ -28,7 +30,7 @@ class SudokuGames @Inject constructor() {
 
     fun unselectedCell(modelSudoku: ModelSudoku): ModelSudoku {
         val newListCells = getListUnselectedItem(modelSudoku)
-        return modelSudoku.copy(listItemCell = newListCells)
+        return modelSudoku.copy(listItemCell = newListCells, hasSelectedCells = false)
     }
 
     /** selected cell fun_________________________________________________________________________*/
@@ -44,16 +46,7 @@ class SudokuGames @Inject constructor() {
         val newListCells = getListUnselectedItem(modelSudoku = modelSudoku)
             .map { itemCell ->
                 // text style for text on cell (if error color red)
-                val textStyleErrorOrNot =
-                    if (itemCell.setValue == itemCell.startedValue)
-                    //text on line vertical horizontal or block if is started text BOLD
-                        if (itemCell.isStartedCell)
-                            TextStyleEnum.ON_SELECTED_LINE_OR_BLOCK_STARTED
-                        else
-                            TextStyleEnum.ON_SELECTED_LINE_OR_BLOCK_NO_STARTED
-                    //__________________________________________________________________
-                    else
-                        TextStyleEnum.ERROR
+                val textStyleErrorOrNot = getTextStyleErrorOrNot(itemCell)
 
                 // set new color on cells
                 when {
@@ -88,8 +81,9 @@ class SudokuGames @Inject constructor() {
                     else -> itemCell
                 }
             }
-        return modelSudoku.copy(listItemCell = newListCells)
+        return modelSudoku.copy(listItemCell = newListCells, hasSelectedCells = true)
     }
+
 
     /**Set value in cell ________________________________________________________________________*/
     fun setValueInCell(value: Int, modelSudoku: ModelSudoku): ModelSudoku {
@@ -181,7 +175,23 @@ class SudokuGames @Inject constructor() {
     }
 
 
-    /** Other fun ____________________________________________________________________________________*/
+    /** Other fun _________________________________________________________________________________
+    _______________________________________________________________________________________________
+    _____________________________________________________________________________________________*/
+    private fun getTextStyleErrorOrNot(itemCell: ItemCell): TextStyleEnum {
+        val textStyleErrorOrNot =
+            if (itemCell.setValue == itemCell.startedValue)
+            //text on line vertical horizontal or block if is started text BOLD
+                if (itemCell.isStartedCell)
+                    TextStyleEnum.ON_SELECTED_LINE_OR_BLOCK_STARTED
+                else
+                    TextStyleEnum.ON_SELECTED_LINE_OR_BLOCK_NO_STARTED
+            //__________________________________________________________________
+            else
+                TextStyleEnum.ERROR
+        return textStyleErrorOrNot
+    }
+
     private fun getIndexCellInSelectedBlock(index: Int): List<Int> {
         // Ширина и высота сетки судоку
         val gridSize = 9

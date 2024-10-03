@@ -32,6 +32,17 @@ class MainActivity : ComponentActivity() {
                     val cellViewModel: CellViewModel by viewModels()
                     AppNavGraph(
                         navController = navHostController,
+                        screenStartedContent = {
+                            StartedScreen(
+                                cellViewModel =cellViewModel,
+                                onChecked = { isHide ->
+                                    cellViewModel.onOffHideSelected(isHide = isHide)
+                                },
+                                onButtonClickListener = {
+                                    navHostController.navigate(Screens.Game.route)
+                                }
+                            )
+                        },
                         screenGameContent = {
                             MyLazyGridForSudokuGameScreen(
                                 cellViewModel = cellViewModel,// todo need refactor
@@ -41,18 +52,9 @@ class MainActivity : ComponentActivity() {
                         },
                         screenVictory = {
                             ScreenVictory()
-                        },
-                        screenStartedContent = {
-                            StartedScreen(
-                                onChecked = { isHide ->
-                                    cellViewModel.onOffHideSelected(isHide = isHide)
-                                },
-                                onButtonClickListener = {
-                                    navHostController.navigate(Screens.Game.route)
-                                }
-                            )
                         }
-                    )
+
+                        )
                 }
             }
         }
