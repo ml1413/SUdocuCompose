@@ -58,15 +58,13 @@ class SudokuGames @Inject constructor() {
                 when {
                     itemCell.selectedCellIndex == index -> {
                         itemCell.copy(
-                            selectedCol = selectedColum,
-                            selectedRow = selectedRow,
                             isSelected = isSelected,
                             colorCell = ColorCellEnum.SELECTED_CELL,
                             textStyle = TextStyleEnum.ON_SELECTED_LINE_OR_BLOCK_NO_STARTED
                         )
                     }
 
-                    itemCell.selectedCol == selectedColum || itemCell.selectedRow == selectedRow -> {
+                    itemCell.column == selectedColum || itemCell.row == selectedRow -> {
                         itemCell.copy(
                             colorCell = ColorCellEnum.SELECT_LINE,
                             textStyle = textStyleErrorOrNot
@@ -79,10 +77,6 @@ class SudokuGames @Inject constructor() {
                             textStyle = textStyleErrorOrNot
                         )
                     }
-                    //todo possibly rewrites!!!!!!!!!!!!!!!!!!! need debug
-//                    itemCell.setValue != itemCell.startedValue -> {
-//                        itemCell.copy(textStyle = TextStyleEnum.ERROR)
-//                    }
 
                     else -> itemCell
                 }
@@ -119,8 +113,8 @@ class SudokuGames @Inject constructor() {
                     startedValue = value,
                     setValue = if (isStartedCell) value else -1,
                     isStartedCell = isStartedCell,
-                    selectedRow = row,
-                    selectedCol = colum,
+                    row = row,
+                    column = colum,
                     selectedCellIndex = ind,
                     colorCell = if (isStartedCell) ColorCellEnum.COLOR_STARTED_CELL else ColorCellEnum.UNSELECTED,
                     textStyle = TextStyleEnum.ON_STARTED_CELL
@@ -208,7 +202,7 @@ class SudokuGames @Inject constructor() {
         modelSudoku: ModelSudoku
     ): TextStyleEnum {
         val textStyleErrorOrNot =
-            if (itemCell.setValue != itemCell.startedValue && modelSudoku.isShowErrorAnswer)
+            if (itemCell.setValue != itemCell.startedValue && modelSudoku.isShowErrorAnswer && itemCell.setValue > 0)
                 TextStyleEnum.ERROR
             else
                 TextStyleEnum.UNSELECTED
@@ -239,7 +233,17 @@ class SudokuGames @Inject constructor() {
     }
 
     private fun getListUnselectedItem(modelSudoku: ModelSudoku): List<ItemCell> {
+        val listRow = MutableList<Int>(9) { 0 }
         val newListCells = modelSudoku.listItemCell
+
+//            .map { itemCell ->
+//                if (itemCell.setValue == itemCell.startedValue) {
+//                    listRow[itemCell.row - 1] += 1
+//                }
+//                itemCell
+//            }
+
+
             .map { itemCell ->
                 // text style for text on cell (if error color red)
                 val textStyleErrorOrNot = getStaleTextErrorOrNotForCell(itemCell, modelSudoku)
@@ -248,7 +252,7 @@ class SudokuGames @Inject constructor() {
                     itemCell.isSelected -> itemCell.copy(
                         isSelected = false,
                         colorCell = ColorCellEnum.UNSELECTED,
-                        textStyle = TextStyleEnum.UNSELECTED
+                        textStyle = textStyleErrorOrNot
                     )
 
                     itemCell.isStartedCell -> {
@@ -268,6 +272,7 @@ class SudokuGames @Inject constructor() {
                     else -> itemCell
                 }
             }
+        Log.d("TAG1", "getListUnselectedItem: ${listRow}")
         return newListCells
     }
 
