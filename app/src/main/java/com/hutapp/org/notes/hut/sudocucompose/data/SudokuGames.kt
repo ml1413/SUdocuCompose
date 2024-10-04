@@ -52,7 +52,10 @@ class SudokuGames @Inject constructor() {
             .map { itemCell ->
                 // text style for text on cell (if error color red)
                 val textStyleErrorOrNot =
-                    getTextStyleErrorOrNot(itemCell = itemCell, modelSudoku = modelSudoku)
+                    getTextStyleErrorOrNotOnLieAndBlock(
+                        itemCell = itemCell,
+                        modelSudoku = modelSudoku
+                    )
 
                 // set new color on cells
                 when {
@@ -178,7 +181,7 @@ class SudokuGames @Inject constructor() {
     /** Other fun _________________________________________________________________________________
     _______________________________________________________________________________________________
     _____________________________________________________________________________________________*/
-    private fun getTextStyleErrorOrNot(
+    private fun getTextStyleErrorOrNotOnLieAndBlock(
         itemCell: ItemCell,
         modelSudoku: ModelSudoku
     ): TextStyleEnum {
@@ -233,17 +236,10 @@ class SudokuGames @Inject constructor() {
     }
 
     private fun getListUnselectedItem(modelSudoku: ModelSudoku): List<ItemCell> {
-        val listRow = MutableList<Int>(9) { 0 }
+        val listColumns = getRowsAndColumnsCountCorrectAnswer(modelSudoku)
+
+
         val newListCells = modelSudoku.listItemCell
-
-//            .map { itemCell ->
-//                if (itemCell.setValue == itemCell.startedValue) {
-//                    listRow[itemCell.row - 1] += 1
-//                }
-//                itemCell
-//            }
-
-
             .map { itemCell ->
                 // text style for text on cell (if error color red)
                 val textStyleErrorOrNot = getStaleTextErrorOrNotForCell(itemCell, modelSudoku)
@@ -272,8 +268,24 @@ class SudokuGames @Inject constructor() {
                     else -> itemCell
                 }
             }
-        Log.d("TAG1", "getListUnselectedItem: ${listRow}")
+        Log.d("TAG1", "getListUnselectedItem: ${listColumns}")
         return newListCells
+    }
+
+    private fun getRowsAndColumnsCountCorrectAnswer(modelSudoku: ModelSudoku): Triple<List<Int>, List<Int>, Nothing?> {
+        val listRows = MutableList(9) { MutableList(9) { 0 } }
+        val listColumns = MutableList(9) { MutableList(9) { 0 } }
+        modelSudoku.listItemCell.map { itemCell ->
+            if (itemCell.setValue == itemCell.startedValue) {
+                if (listRows[itemCell.column - 1][itemCell.row - 1] < 1)
+                    listRows[itemCell.column - 1][itemCell.row - 1] = 1
+                if (listColumns[itemCell.row - 1][itemCell.column - 1] < 1)
+                    listColumns[itemCell.row - 1][itemCell.column - 1] = 1
+            }
+            itemCell
+        }
+        return Triple(listRows.map { it.sum() }, listColumns.map { it.sum() }, null)
+
     }
 
 
