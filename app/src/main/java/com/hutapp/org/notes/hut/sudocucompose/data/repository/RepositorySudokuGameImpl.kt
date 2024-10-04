@@ -32,6 +32,10 @@ class RepositorySudokuGameImpl @Inject constructor
         return sudokuGames.onOffHideSelectedLineOnField(isHide = isHide, modelSudoku = modelSudoku)
     }
 
+    override fun isShowErrorAnswer(isShowError: Boolean, modelSudoku: ModelSudoku): ModelSudoku {
+        return sudokuGames.isShowErrorAnswer(isShowError = isShowError, modelSudoku = modelSudoku)
+    }
+
     override fun getListForStated(): ModelSudoku {
         return sudokuGames.getListModelSudoku()
     }

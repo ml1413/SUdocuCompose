@@ -29,6 +29,7 @@ fun MyLazyGridForSudokuGameScreen(
         HideSelected(stateFromViewModel = sudokuViewModelState, cellViewModel = cellViewModel)
         //__________________________________________________________________________________________
         val colorGrid = MaterialTheme.colorScheme.onBackground
+        Log.d("TAG1", "MyLazyGridForSudokuGameScreen: ")
         Box(
             modifier = modifier
                 .wrapContentSize()

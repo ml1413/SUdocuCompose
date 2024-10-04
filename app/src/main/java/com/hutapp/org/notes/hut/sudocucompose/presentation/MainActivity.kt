@@ -34,9 +34,11 @@ class MainActivity : ComponentActivity() {
                         navController = navHostController,
                         screenStartedContent = {
                             StartedScreen(
-                                cellViewModel =cellViewModel,
-                                onChecked = { isHide ->
+                                cellViewModel = cellViewModel,
+                                onCheckedIsHideSelected = { isHide ->
                                     cellViewModel.onOffHideSelected(isHide = isHide)
+                                }, onCheckedIsShowErrorAnswer = { isShowError ->
+                                    cellViewModel.isShowErrorAnswer(isShowError = isShowError)
                                 },
                                 onButtonClickListener = {
                                     navHostController.navigate(Screens.Game.route)
@@ -54,7 +56,7 @@ class MainActivity : ComponentActivity() {
                             ScreenVictory()
                         }
 
-                        )
+                    )
                 }
             }
         }

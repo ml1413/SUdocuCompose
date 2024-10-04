@@ -16,4 +16,5 @@ interface RepositorySudokuGame {
     ): ModelSudoku
 
     fun onOffHideSelectedLineOnField(isHide: Boolean, modelSudoku: ModelSudoku): ModelSudoku
+    fun isShowErrorAnswer(isShowError: Boolean, modelSudoku: ModelSudoku): ModelSudoku
 }

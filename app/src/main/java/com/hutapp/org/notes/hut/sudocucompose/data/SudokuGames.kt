@@ -8,7 +8,12 @@ import com.hutapp.org.notes.hut.sudocucompose.domain.moles.TextStyleEnum
 import javax.inject.Inject
 
 class SudokuGames @Inject constructor() {
-    /** on off hide selected line__________________________________________________________________*/
+    /** on off show Error answer__________________________________________________________________*/
+    fun isShowErrorAnswer(isShowError: Boolean, modelSudoku: ModelSudoku): ModelSudoku {
+        return modelSudoku.copy(isShowErrorAnswer = isShowError)
+    }
+
+    /** on off hide selected line_________________________________________________________________*/
     fun onOffHideSelectedLineOnField(isHide: Boolean, modelSudoku: ModelSudoku): ModelSudoku {
         Log.d("TAG1", "onOffHideSelectedLineOnField: ")
         return modelSudoku.copy(isHideSelected = isHide)
@@ -46,7 +51,8 @@ class SudokuGames @Inject constructor() {
         val newListCells = getListUnselectedItem(modelSudoku = modelSudoku)
             .map { itemCell ->
                 // text style for text on cell (if error color red)
-                val textStyleErrorOrNot = getTextStyleErrorOrNot(itemCell)
+                val textStyleErrorOrNot =
+                    getTextStyleErrorOrNot(itemCell = itemCell, modelSudoku = modelSudoku)
 
                 // set new color on cells
                 when {
@@ -73,10 +79,10 @@ class SudokuGames @Inject constructor() {
                             textStyle = textStyleErrorOrNot
                         )
                     }
-
-                    itemCell.setValue != itemCell.startedValue -> {
-                        itemCell.copy(textStyle = TextStyleEnum.ERROR)
-                    }
+                    //todo possibly rewrites!!!!!!!!!!!!!!!!!!! need debug
+//                    itemCell.setValue != itemCell.startedValue -> {
+//                        itemCell.copy(textStyle = TextStyleEnum.ERROR)
+//                    }
 
                     else -> itemCell
                 }
@@ -178,17 +184,34 @@ class SudokuGames @Inject constructor() {
     /** Other fun _________________________________________________________________________________
     _______________________________________________________________________________________________
     _____________________________________________________________________________________________*/
-    private fun getTextStyleErrorOrNot(itemCell: ItemCell): TextStyleEnum {
-        val textStyleErrorOrNot =
-            if (itemCell.setValue == itemCell.startedValue)
+    private fun getTextStyleErrorOrNot(
+        itemCell: ItemCell,
+        modelSudoku: ModelSudoku
+    ): TextStyleEnum {
+        val textStyleErrorOrNotFotLineAndBlock =
+            if (itemCell.setValue != itemCell.startedValue && modelSudoku.isShowErrorAnswer)
+                TextStyleEnum.ERROR
+            else
             //text on line vertical horizontal or block if is started text BOLD
                 if (itemCell.isStartedCell)
                     TextStyleEnum.ON_SELECTED_LINE_OR_BLOCK_STARTED
                 else
                     TextStyleEnum.ON_SELECTED_LINE_OR_BLOCK_NO_STARTED
-            //__________________________________________________________________
-            else
+        //__________________________________________________________________
+
+
+        return textStyleErrorOrNotFotLineAndBlock
+    }
+
+    private fun getStaleTextErrorOrNotForCell(
+        itemCell: ItemCell,
+        modelSudoku: ModelSudoku
+    ): TextStyleEnum {
+        val textStyleErrorOrNot =
+            if (itemCell.setValue != itemCell.startedValue && modelSudoku.isShowErrorAnswer)
                 TextStyleEnum.ERROR
+            else
+                TextStyleEnum.UNSELECTED
         return textStyleErrorOrNot
     }
 
@@ -219,11 +242,7 @@ class SudokuGames @Inject constructor() {
         val newListCells = modelSudoku.listItemCell
             .map { itemCell ->
                 // text style for text on cell (if error color red)
-                val textStyleErrorOrNot =
-                    if (itemCell.setValue == itemCell.startedValue)
-                        TextStyleEnum.UNSELECTED
-                    else
-                        TextStyleEnum.ERROR
+                val textStyleErrorOrNot = getStaleTextErrorOrNotForCell(itemCell, modelSudoku)
                 // clear all selected reset color
                 when {
                     itemCell.isSelected -> itemCell.copy(
@@ -251,5 +270,6 @@ class SudokuGames @Inject constructor() {
             }
         return newListCells
     }
+
 
 }

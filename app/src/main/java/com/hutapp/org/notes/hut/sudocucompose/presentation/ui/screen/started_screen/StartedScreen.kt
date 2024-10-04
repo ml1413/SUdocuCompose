@@ -1,5 +1,6 @@
 package com.hutapp.org.notes.hut.sudocucompose.presentation.ui.screen.started_screen
 
+import android.util.Log
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -8,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -31,15 +31,12 @@ import com.hutapp.org.notes.hut.sudocucompose.presentation.CellViewModel
 fun StartedScreen(
     modifier: Modifier = Modifier,
     cellViewModel: CellViewModel,
-    onChecked: (check: Boolean) -> Unit,
+    onCheckedIsHideSelected: (check: Boolean) -> Unit,
+    onCheckedIsShowErrorAnswer: (check: Boolean) -> Unit,
     onButtonClickListener: () -> Unit
 ) {
     val stateCellViewModel = cellViewModel.selectedCell.observeAsState().value
     if (stateCellViewModel is CellViewModel.GameState.ResumeGame) {
-        val listPariForLazy = listOf(
-            stateCellViewModel.modelSudoku.isHideSelected to R.string.hide_select,
-            stateCellViewModel.modelSudoku.isShowErrorAnswer to R.string.show_wrong_answer
-        )
         Column(
             modifier = modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -48,15 +45,23 @@ fun StartedScreen(
                 modifier = modifier.weight(1f),
                 contentPadding = PaddingValues(vertical = 32.dp)
             ) {
-                items(listPariForLazy) { pair ->
+                item {
                     MyCheckBoxLine(
                         modifier = modifier,
-                        text = stringResource(pair.second),
-                        check = pair.first,
-                        onChecked = onChecked
+                        text = stringResource(R.string.hide_select),
+                        check = stateCellViewModel.modelSudoku.isHideSelected,
+                        onChecked = onCheckedIsHideSelected
                     )
-
                 }
+                item {
+                    MyCheckBoxLine(
+                        modifier = modifier,
+                        text = stringResource(R.string.show_wrong_answer),
+                        check = stateCellViewModel.modelSudoku.isShowErrorAnswer,
+                        onChecked = onCheckedIsShowErrorAnswer
+                    )
+                }
+
             }
             Button(
                 modifier = modifier.padding(16.dp),
