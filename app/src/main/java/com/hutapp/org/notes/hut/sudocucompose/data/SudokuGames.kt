@@ -236,41 +236,42 @@ class SudokuGames @Inject constructor() {
     }
 
     private fun getListUnselectedItem(modelSudoku: ModelSudoku): List<ItemCell> {
-        val listColumns = getRowsAndColumnsCountCorrectAnswer(modelSudoku)
-
 
         val newListCells = modelSudoku.listItemCell
             .map { itemCell ->
                 // text style for text on cell (if error color red)
                 val textStyleErrorOrNot = getStaleTextErrorOrNotForCell(itemCell, modelSudoku)
                 // clear all selected reset color
+
+
                 when {
                     itemCell.isSelected -> itemCell.copy(
                         isSelected = false,
                         colorCell = ColorCellEnum.UNSELECTED,
-                        textStyle = textStyleErrorOrNot
+                        textStyle = textStyleErrorOrNot,
                     )
 
                     itemCell.isStartedCell -> {
                         itemCell.copy(
                             colorCell = ColorCellEnum.COLOR_STARTED_CELL,
-                            textStyle = TextStyleEnum.ON_STARTED_CELL
+                            textStyle = TextStyleEnum.ON_STARTED_CELL,
                         )
                     }
 
                     !itemCell.isStartedCell -> {
                         itemCell.copy(
                             colorCell = ColorCellEnum.UNSELECTED,
-                            textStyle = textStyleErrorOrNot
+                            textStyle = textStyleErrorOrNot,
                         )
                     }
 
                     else -> itemCell
                 }
             }
-        Log.d("TAG1", "getListUnselectedItem: ${listColumns}")
         return newListCells
     }
+
+
 
     private fun getRowsAndColumnsCountCorrectAnswer(modelSudoku: ModelSudoku): Triple<List<Int>, List<Int>, Nothing?> {
         val listRows = MutableList(9) { MutableList(9) { 0 } }

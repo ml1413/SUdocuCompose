@@ -2,7 +2,9 @@ package com.hutapp.org.notes.hut.sudocucompose.presentation.ui.screen.screen_gam
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -12,7 +14,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 // keyboard for set value in cell __________________________________________________________________
 @Composable
@@ -27,7 +31,7 @@ fun MyBottomKeyBoard(
         items(listNumber) { value ->
             FloatingActionButton(
                 modifier = modifier
-                    .padding(8.dp)
+                    .padding(12.dp)
                     .border(
                         width = 1.dp, color = MaterialTheme.colorScheme.onBackground,
                         shape = FloatingActionButtonDefaults.shape,
@@ -37,7 +41,7 @@ fun MyBottomKeyBoard(
                     onNumButtonClickListener(value)
                 }
             ) {
-                Text(text = "$value")
+                Text(text = "$value", fontWeight = FontWeight.ExtraBold, fontSize = 18.sp)
             }
         }
     }

@@ -17,6 +17,8 @@ data class ItemCell(
     val row: Int = -1,
     val column: Int = -1,
     val colorCell: ColorCellEnum = ColorCellEnum.UNSELECTED,
-    val textStyle: TextStyleEnum = TextStyleEnum.UNSELECTED
+    val textStyle: TextStyleEnum = TextStyleEnum.UNSELECTED,
+
 )
+
 

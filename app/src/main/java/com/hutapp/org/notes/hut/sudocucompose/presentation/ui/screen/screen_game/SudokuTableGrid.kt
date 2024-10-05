@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -19,7 +18,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ColorCellEnum
 import com.hutapp.org.notes.hut.sudocucompose.domain.moles.TextStyleEnum
@@ -53,7 +51,7 @@ fun SudokuTableGrid(
                                     .weight(1f)
                                     .border(
                                         width = 1.dp,
-                                        color = colorGrid
+                                        color = colorGrid,
                                     )
                                     .aspectRatio(1f)
                             )
@@ -95,7 +93,7 @@ fun SudokuTableGrid(
                                     )
                                     .border(
                                         width = 0.1.dp,
-                                        color = colorGrid
+                                        color = colorGrid,
                                     )
                                     .clickable(
                                         enabled = itemModelSudoku.isStartedCell.not()
@@ -116,46 +114,50 @@ fun SudokuTableGrid(
                             ) {
                                 val numForCell =
                                     getTestForCell(itemItemCell = itemModelSudoku)
-                                when (itemModelSudoku.textStyle) {
-                                    TextStyleEnum.UNSELECTED -> {
-                                        Text(text = numForCell)
-                                    }
-
-                                    TextStyleEnum.ON_STARTED_CELL -> {
-                                        Text(
-                                            text = numForCell,
-                                            fontWeight = FontWeight.ExtraBold
-                                        )
-                                    }
-
-                                    TextStyleEnum.SELECTED_IN_CELL -> {
-                                        Text(
-                                            text = numForCell,
-                                            color = MaterialTheme.colorScheme.onPrimary
-                                        )
-                                    }
-
-                                    TextStyleEnum.ON_SELECTED_LINE_OR_BLOCK_NO_STARTED -> {
-                                        Text(
-                                            text = numForCell,
-                                            color = MaterialTheme.colorScheme.onPrimary
-                                        )
-                                    }
+                                Box() {
 
 
-                                    TextStyleEnum.ON_SELECTED_LINE_OR_BLOCK_STARTED -> {
-                                        Text(
-                                            text = numForCell,
-                                            color = MaterialTheme.colorScheme.onPrimary,
-                                            fontWeight = FontWeight.ExtraBold
-                                        )
-                                    }
+                                    when (itemModelSudoku.textStyle) {
+                                        TextStyleEnum.UNSELECTED -> {
+                                            Text(text = numForCell)
+                                        }
 
-                                    TextStyleEnum.ERROR -> {
-                                        Text(
-                                            text = numForCell,
-                                            color = Color.Red
-                                        )
+                                        TextStyleEnum.ON_STARTED_CELL -> {
+                                            Text(
+                                                text = numForCell,
+                                                fontWeight = FontWeight.ExtraBold
+                                            )
+                                        }
+
+                                        TextStyleEnum.SELECTED_IN_CELL -> {
+                                            Text(
+                                                text = numForCell,
+                                                color = MaterialTheme.colorScheme.onPrimary
+                                            )
+                                        }
+
+                                        TextStyleEnum.ON_SELECTED_LINE_OR_BLOCK_NO_STARTED -> {
+                                            Text(
+                                                text = numForCell,
+                                                color = MaterialTheme.colorScheme.onPrimary
+                                            )
+                                        }
+
+
+                                        TextStyleEnum.ON_SELECTED_LINE_OR_BLOCK_STARTED -> {
+                                            Text(
+                                                text = numForCell,
+                                                color = MaterialTheme.colorScheme.onPrimary,
+                                                fontWeight = FontWeight.ExtraBold
+                                            )
+                                        }
+
+                                        TextStyleEnum.ERROR -> {
+                                            Text(
+                                                text = numForCell,
+                                                color = Color.Red
+                                            )
+                                        }
                                     }
                                 }
                                 index += 1
