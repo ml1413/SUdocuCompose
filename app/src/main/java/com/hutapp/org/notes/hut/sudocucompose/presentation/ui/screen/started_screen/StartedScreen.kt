@@ -2,6 +2,7 @@ package com.hutapp.org.notes.hut.sudocucompose.presentation.ui.screen.started_sc
 
 import android.util.Log
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -31,91 +32,21 @@ import com.hutapp.org.notes.hut.sudocucompose.presentation.CellViewModel
 fun StartedScreen(
     modifier: Modifier = Modifier,
     cellViewModel: CellViewModel,
-    onCheckedIsHideSelected: (check: Boolean) -> Unit,
-    onCheckedIsShowErrorAnswer: (check: Boolean) -> Unit,
     onButtonClickListener: () -> Unit
 ) {
     val stateCellViewModel = cellViewModel.selectedCell.observeAsState().value
     if (stateCellViewModel is CellViewModel.GameState.ResumeGame) {
-        Column(
+        Box(
             modifier = modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally
+            contentAlignment = Alignment.BottomCenter
         ) {
-            LazyColumn(
-                modifier = modifier.weight(1f),
-                contentPadding = PaddingValues(vertical = 32.dp)
-            ) {
-                item {
-                    MyCheckBoxLine(
-                        modifier = modifier,
-                        text = stringResource(R.string.hide_select),
-                        check = stateCellViewModel.modelSudoku.isHideSelected,
-                        onChecked = onCheckedIsHideSelected
-                    )
-                }
-                item {
-                    MyCheckBoxLine(
-                        modifier = modifier,
-                        text = stringResource(R.string.show_wrong_answer),
-                        check = stateCellViewModel.modelSudoku.isShowErrorAnswer,
-                        onChecked = onCheckedIsShowErrorAnswer
-                    )
-                }
 
-            }
             Button(
                 modifier = modifier.padding(16.dp),
                 onClick = onButtonClickListener
             ) { Text(stringResource(R.string.start)) }
         }
     }
-}
-
-
-@Composable
-private fun MyCheckBoxLine(
-    modifier: Modifier,
-    check: Boolean,
-    text: String,
-    onChecked: (Boolean) -> Unit
-) {
-    Row(
-        Modifier
-            .fillMaxWidth()
-            .padding(16.dp, 2.dp, 16.dp)
-            .border(
-                1.dp,
-                shape = RoundedCornerShape(12.dp), color = MaterialTheme.colorScheme.onBackground
-            )
-            .toggleable(
-                value = check,
-                onValueChange = {
-                    onChecked(check.not())
-                },
-                role = Role.Checkbox
-            ),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Checkbox(
-            modifier = modifier.padding(16.dp),
-            checked = check,
-            onCheckedChange = null
-        )
-        Text(text = text, fontWeight = FontWeight.Bold)
-    }
-}
-
-@Preview(showSystemUi = true, showBackground = true)
-@Composable
-fun Prew(modifier: Modifier = Modifier) {
-    MaterialTheme {
-        MyCheckBoxLine(
-            modifier = modifier,
-            true,
-            "wer", onChecked = {}
-        )
-    }
-
 }
 
 
