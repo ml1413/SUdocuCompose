@@ -7,6 +7,7 @@ import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ModelSudoku
 import com.hutapp.org.notes.hut.sudocucompose.domain.moles.TextStyleEnum
 import javax.inject.Inject
 
+// todo нужно сделать отключение жолтого и зеленого
 class SudokuGames @Inject constructor() {
     /** on off show Error answer__________________________________________________________________*/
     fun isShowErrorAnswer(isShowError: Boolean, modelSudoku: ModelSudoku): ModelSudoku {
@@ -69,14 +70,15 @@ class SudokuGames @Inject constructor() {
 
                     itemCell.column == selectedColum || itemCell.row == selectedRow -> {
                         itemCell.copy(
-                            colorCell = ColorCellEnum.SELECT_LINE,
+                            colorCell =
+                            if (itemCell.isStartedCell) ColorCellEnum.STARTED_CELL_ON_LINE else ColorCellEnum.SELECT_LINE,
                             textStyle = textStyleErrorOrNot
                         )
                     }
 
                     listIndexFromBlock.contains(itemCell.selectedCellIndex) -> {
                         itemCell.copy(
-                            colorCell = ColorCellEnum.SELECTED_BLOCK,
+                            colorCell = if (itemCell.isStartedCell) ColorCellEnum.STARTED_CELL_ON_LINE else ColorCellEnum.SELECTED_BLOCK,
                             textStyle = textStyleErrorOrNot
                         )
                     }
@@ -208,10 +210,10 @@ class SudokuGames @Inject constructor() {
         val textStyleErrorOrNot =
             if (itemCell.setValue != itemCell.startedValue && modelSudoku.isShowErrorAnswer && itemCell.setValue > 0)
                 TextStyleEnum.ERROR
-            else if (rowColumnPair.first[itemCell.column - 1] == 8 || rowColumnPair.second[itemCell.row - 1] == 8)
-                TextStyleEnum.ALMOST
             else if (rowColumnPair.first[itemCell.column - 1] == 9 || rowColumnPair.second[itemCell.row - 1] == 9)
                 TextStyleEnum.ALL_IS_CORRECT
+            else if (rowColumnPair.first[itemCell.column - 1] == 8 || rowColumnPair.second[itemCell.row - 1] == 8)
+                TextStyleEnum.ALMOST
             else
                 TextStyleEnum.UNSELECTED
         return textStyleErrorOrNot
@@ -287,14 +289,18 @@ class SudokuGames @Inject constructor() {
     private fun getRowsAndColumnsCountCorrectAnswer(modelSudoku: ModelSudoku): Pair<List<Int>, List<Int>> {
         val listRows = MutableList(9) { MutableList(9) { 0 } }
         val listColumns = MutableList(9) { MutableList(9) { 0 } }
-        modelSudoku.listItemCell.map { itemCell ->
+        val listBlock = MutableList(9) { MutableList(9) { 0 } }
+
+
+        modelSudoku.listItemCell.forEach { itemCell ->
             if (itemCell.setValue == itemCell.startedValue) {
+
                 if (listRows[itemCell.column - 1][itemCell.row - 1] < 1)
                     listRows[itemCell.column - 1][itemCell.row - 1] = 1
                 if (listColumns[itemCell.row - 1][itemCell.column - 1] < 1)
                     listColumns[itemCell.row - 1][itemCell.column - 1] = 1
             }
-            itemCell
+
         }
         return Pair(listRows.map { it.sum() }, listColumns.map { it.sum() })
 

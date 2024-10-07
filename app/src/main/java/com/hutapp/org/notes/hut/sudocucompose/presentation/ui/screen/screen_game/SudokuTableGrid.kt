@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -87,6 +88,9 @@ fun SudokuTableGrid(
 
                                                 ColorCellEnum.SELECTED_BLOCK ->
                                                     primary.copy(alpha = 0.4f)
+
+                                                ColorCellEnum.STARTED_CELL_ON_LINE ->
+                                                    primary
                                             }
                                         }
 
@@ -94,6 +98,14 @@ fun SudokuTableGrid(
                                     .border(
                                         width = 0.1.dp,
                                         color = colorGrid,
+                                    )
+                                    .padding(1.dp)
+                                    .border(
+                                        width = 1.dp,
+                                        color =
+                                        if (itemModelSudoku.colorCell == ColorCellEnum.SELECTED_CELL)
+                                            MaterialTheme.colorScheme.onPrimary
+                                        else Color.Unspecified,
                                     )
                                     .clickable(
                                         enabled = itemModelSudoku.isStartedCell.not()
