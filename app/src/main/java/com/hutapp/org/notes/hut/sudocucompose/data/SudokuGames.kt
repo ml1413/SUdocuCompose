@@ -210,6 +210,8 @@ class SudokuGames @Inject constructor() {
                 TextStyleEnum.ERROR
             else if (rowColumnPair.first[itemCell.column - 1] == 8 || rowColumnPair.second[itemCell.row - 1] == 8)
                 TextStyleEnum.ALMOST
+            else if (rowColumnPair.first[itemCell.column - 1] == 9 || rowColumnPair.second[itemCell.row - 1] == 9)
+                TextStyleEnum.ALL_IS_CORRECT
             else
                 TextStyleEnum.UNSELECTED
         return textStyleErrorOrNot

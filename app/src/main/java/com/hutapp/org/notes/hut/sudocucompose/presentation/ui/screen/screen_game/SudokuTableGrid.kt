@@ -163,6 +163,13 @@ fun SudokuTableGrid(
                                                 text = numForCell,
                                                 color = Color.Yellow
                                             )
+
+                                        TextStyleEnum.ALL_IS_CORRECT -> {
+                                            Text(
+                                                text = numForCell,
+                                                color = Color.Green
+                                            )
+                                        }
                                     }
                                 }
                                 index += 1
