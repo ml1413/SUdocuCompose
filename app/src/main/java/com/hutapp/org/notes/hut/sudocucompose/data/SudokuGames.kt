@@ -202,11 +202,14 @@ class SudokuGames @Inject constructor() {
 
     private fun getStaleTextErrorOrNotForCell(
         itemCell: ItemCell,
-        modelSudoku: ModelSudoku
+        modelSudoku: ModelSudoku,
+        rowColumnPair: Pair<List<Int>, List<Int>>
     ): TextStyleEnum {
         val textStyleErrorOrNot =
             if (itemCell.setValue != itemCell.startedValue && modelSudoku.isShowErrorAnswer && itemCell.setValue > 0)
                 TextStyleEnum.ERROR
+            else if (rowColumnPair.first[itemCell.column - 1] == 8 || rowColumnPair.second[itemCell.row - 1] == 8)
+                TextStyleEnum.ALMOST
             else
                 TextStyleEnum.UNSELECTED
         return textStyleErrorOrNot
@@ -236,32 +239,39 @@ class SudokuGames @Inject constructor() {
     }
 
     private fun getListUnselectedItem(modelSudoku: ModelSudoku): List<ItemCell> {
+        val rowColumnPair = getRowsAndColumnsCountCorrectAnswer(modelSudoku = modelSudoku)
 
         val newListCells = modelSudoku.listItemCell
             .map { itemCell ->
                 // text style for text on cell (if error color red)
-                val textStyleErrorOrNot = getStaleTextErrorOrNotForCell(itemCell, modelSudoku)
+                val textStyleErrorOrAlmostORNot =
+                    getStaleTextErrorOrNotForCell(itemCell, modelSudoku, rowColumnPair)
                 // clear all selected reset color
-
 
                 when {
                     itemCell.isSelected -> itemCell.copy(
                         isSelected = false,
                         colorCell = ColorCellEnum.UNSELECTED,
-                        textStyle = textStyleErrorOrNot,
-                    )
+                        textStyle = textStyleErrorOrAlmostORNot,
+
+                        )
 
                     itemCell.isStartedCell -> {
                         itemCell.copy(
                             colorCell = ColorCellEnum.COLOR_STARTED_CELL,
-                            textStyle = TextStyleEnum.ON_STARTED_CELL,
-                        )
+                            textStyle =
+                            if (textStyleErrorOrAlmostORNot != TextStyleEnum.UNSELECTED)
+                                textStyleErrorOrAlmostORNot
+                            else
+                                TextStyleEnum.ON_STARTED_CELL,
+
+                            )
                     }
 
                     !itemCell.isStartedCell -> {
                         itemCell.copy(
                             colorCell = ColorCellEnum.UNSELECTED,
-                            textStyle = textStyleErrorOrNot,
+                            textStyle = textStyleErrorOrAlmostORNot,
                         )
                     }
 
@@ -272,8 +282,7 @@ class SudokuGames @Inject constructor() {
     }
 
 
-
-    private fun getRowsAndColumnsCountCorrectAnswer(modelSudoku: ModelSudoku): Triple<List<Int>, List<Int>, Nothing?> {
+    private fun getRowsAndColumnsCountCorrectAnswer(modelSudoku: ModelSudoku): Pair<List<Int>, List<Int>> {
         val listRows = MutableList(9) { MutableList(9) { 0 } }
         val listColumns = MutableList(9) { MutableList(9) { 0 } }
         modelSudoku.listItemCell.map { itemCell ->
@@ -285,7 +294,7 @@ class SudokuGames @Inject constructor() {
             }
             itemCell
         }
-        return Triple(listRows.map { it.sum() }, listColumns.map { it.sum() }, null)
+        return Pair(listRows.map { it.sum() }, listColumns.map { it.sum() })
 
     }
 

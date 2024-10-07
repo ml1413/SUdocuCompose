@@ -114,8 +114,7 @@ fun SudokuTableGrid(
                             ) {
                                 val numForCell =
                                     getTestForCell(itemItemCell = itemModelSudoku)
-                                Box() {
-
+                                Box(contentAlignment = Alignment.Center) {
 
                                     when (itemModelSudoku.textStyle) {
                                         TextStyleEnum.UNSELECTED -> {
@@ -158,6 +157,12 @@ fun SudokuTableGrid(
                                                 color = Color.Red
                                             )
                                         }
+
+                                        TextStyleEnum.ALMOST ->
+                                            Text(
+                                                text = numForCell,
+                                                color = Color.Yellow
+                                            )
                                     }
                                 }
                                 index += 1
