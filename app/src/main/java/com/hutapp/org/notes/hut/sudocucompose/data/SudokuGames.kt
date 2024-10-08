@@ -42,48 +42,51 @@ class SudokuGames @Inject constructor() {
     /** selected cell fun_________________________________________________________________________*/
     fun selectedCell(
         modelSudoku: ModelSudoku,
-        index: Int,
-        selectedRow: Int,
-        selectedColum: Int,
-        isSelected: Boolean
+        itemCell: ItemCell
     ): ModelSudoku {
-        val listIndexFromBlock = getIndexCellInSelectedBlock(index = index)
+        val listIndexFromBlock = getIndexCellInSelectedBlock(index = itemCell.selectedCellIndex)
 
         val newListCells = getListUnselectedItem(modelSudoku = modelSudoku)
-            .map { itemCell ->
+            .map { itItem ->
                 // text style for text on cell (if error color red)
                 val textStyleErrorOrNot =
                     getTextStyleErrorOrNotOnLieAndBlock(
-                        itemCell = itemCell,
+                        itemCell = itItem,
                         modelSudoku = modelSudoku
                     )
 
                 // set new color on cells
                 when {
-                    itemCell.selectedCellIndex == index -> {
-                        itemCell.copy(
-                            isSelected = isSelected,
+                    itItem.selectedCellIndex == itemCell.selectedCellIndex -> {
+                        itItem.copy(
+                            isSelected = itemCell.isSelected,
                             colorCell = ColorCellEnum.SELECTED_CELL,
                             textStyle = TextStyleEnum.ON_SELECTED_LINE_OR_BLOCK_NO_STARTED
                         )
                     }
 
-                    itemCell.column == selectedColum || itemCell.row == selectedRow -> {
-                        itemCell.copy(
+                    itItem.column == itemCell.column || itItem.row == itemCell.row -> {
+                        itItem.copy(
                             colorCell =
-                            if (itemCell.isStartedCell) ColorCellEnum.STARTED_CELL_ON_LINE else ColorCellEnum.SELECT_LINE,
+                            if (itItem.isStartedCell) ColorCellEnum.STARTED_CELL_ON_LINE else ColorCellEnum.SELECT_LINE,
                             textStyle = textStyleErrorOrNot
                         )
                     }
 
-                    listIndexFromBlock.contains(itemCell.selectedCellIndex) -> {
-                        itemCell.copy(
-                            colorCell = if (itemCell.isStartedCell) ColorCellEnum.STARTED_CELL_ON_LINE else ColorCellEnum.SELECTED_BLOCK,
+//                    listIndexFromBlock.contains(itemCell.selectedCellIndex) -> {
+//                        itemCell.copy(
+//                            colorCell = if (itemCell.isStartedCell) ColorCellEnum.STARTED_CELL_ON_LINE else ColorCellEnum.SELECTED_BLOCK,
+//                            textStyle = textStyleErrorOrNot
+//                        )
+//                    }
+                    itItem.block == itemCell.block -> {
+                        itItem.copy(
+                            colorCell = if (itItem.isStartedCell) ColorCellEnum.STARTED_CELL_ON_LINE else ColorCellEnum.SELECTED_BLOCK,
                             textStyle = textStyleErrorOrNot
                         )
                     }
 
-                    else -> itemCell
+                    else -> itItem
                 }
             }
         return modelSudoku.copy(listItemCell = newListCells, hasSelectedCells = true)
@@ -94,7 +97,7 @@ class SudokuGames @Inject constructor() {
     fun setValueInCell(value: Int, modelSudoku: ModelSudoku): ModelSudoku {
         val newList = modelSudoku.listItemCell.map { itemCell ->
             if (itemCell.isSelected) {
-
+                Log.d("TAG1", "setValueInCell: ${itemCell.isSelected}")
                 itemCell.copy(
                     setValue = value
                 )
@@ -118,6 +121,7 @@ class SudokuGames @Inject constructor() {
                     startedValue = value,
                     setValue = if (isStartedCell) value else -1,
                     isStartedCell = isStartedCell,
+                    block = ((row - 1) / 3) * 3 + ((colum - 1) / 3),
                     row = row,
                     column = colum,
                     selectedCellIndex = ind,
@@ -205,15 +209,22 @@ class SudokuGames @Inject constructor() {
     private fun getStaleTextErrorOrNotForCell(
         itemCell: ItemCell,
         modelSudoku: ModelSudoku,
-        rowColumnPair: Pair<List<Int>, List<Int>>
+        rowColumnBox: Triple<List<Int>, List<Int>, List<Int>>
     ): TextStyleEnum {
         val textStyleErrorOrNot =
             if (itemCell.setValue != itemCell.startedValue && modelSudoku.isShowErrorAnswer && itemCell.setValue > 0)
                 TextStyleEnum.ERROR
-            else if (rowColumnPair.first[itemCell.column - 1] == 9 || rowColumnPair.second[itemCell.row - 1] == 9)
-                TextStyleEnum.ALL_IS_CORRECT
-            else if (rowColumnPair.first[itemCell.column - 1] == 8 || rowColumnPair.second[itemCell.row - 1] == 8)
+            else if (rowColumnBox.first[itemCell.column - 1] == 8 ||
+                rowColumnBox.second[itemCell.row - 1] == 8 ||
+                rowColumnBox.third[itemCell.block] == 8
+            )
                 TextStyleEnum.ALMOST
+            else if (
+                rowColumnBox.first[itemCell.column - 1] == 9 ||
+                rowColumnBox.second[itemCell.row - 1] == 9 ||
+                rowColumnBox.third[itemCell.block] == 9
+            )
+                TextStyleEnum.ALL_IS_CORRECT
             else
                 TextStyleEnum.UNSELECTED
         return textStyleErrorOrNot
@@ -286,23 +297,23 @@ class SudokuGames @Inject constructor() {
     }
 
 
-    private fun getRowsAndColumnsCountCorrectAnswer(modelSudoku: ModelSudoku): Pair<List<Int>, List<Int>> {
-        val listRows = MutableList(9) { MutableList(9) { 0 } }
-        val listColumns = MutableList(9) { MutableList(9) { 0 } }
-        val listBlock = MutableList(9) { MutableList(9) { 0 } }
-
+    private fun getRowsAndColumnsCountCorrectAnswer(modelSudoku: ModelSudoku): Triple<List<Int>, List<Int>, List<Int>> {
+        val listRows = MutableList(9) { mutableListOf<Int>() }
+        val listColumns = MutableList(9) { mutableListOf<Int>() }
+        val listBlock = MutableList(9) { mutableListOf<Int>() }
 
         modelSudoku.listItemCell.forEach { itemCell ->
             if (itemCell.setValue == itemCell.startedValue) {
-
-                if (listRows[itemCell.column - 1][itemCell.row - 1] < 1)
-                    listRows[itemCell.column - 1][itemCell.row - 1] = 1
-                if (listColumns[itemCell.row - 1][itemCell.column - 1] < 1)
-                    listColumns[itemCell.row - 1][itemCell.column - 1] = 1
+                listRows[itemCell.column - 1].add(1)
+                listColumns[itemCell.row - 1].add(1)
+                listBlock[itemCell.block].add(1)
             }
 
         }
-        return Pair(listRows.map { it.sum() }, listColumns.map { it.sum() })
+        return Triple(
+            listRows.map { it.sum() },
+            listColumns.map { it.sum() },
+            listBlock.map { it.sum() })
 
     }
 

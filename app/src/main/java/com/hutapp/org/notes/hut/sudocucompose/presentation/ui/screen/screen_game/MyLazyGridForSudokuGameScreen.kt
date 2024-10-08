@@ -78,12 +78,9 @@ fun MyLazyGridForSudokuGameScreen(
                     modifier = modifier,
                     stateFromViewModel = sudokuViewModelState,
                     colorGrid = colorGrid,
-                    onCellClickListener = { index, selectedRow, selectedColum, isSelected ->
+                    onCellClickListener = { itemCell ->
                         cellViewModel.selectedCell(
-                            index = index,
-                            selectedRow = selectedRow,
-                            selectedColum = selectedColum,
-                            isSelected = isSelected
+                            itemCell = itemCell
                         )
                     }
                 )

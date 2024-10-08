@@ -8,17 +8,11 @@ import com.hutapp.org.notes.hut.sudocucompose.domain.repository.RepositorySudoku
 class SelectedCellUseCase(private val repositorySudokuGame: RepositorySudokuGame) {
     operator fun invoke(
         modelSudoku: ModelSudoku,
-        index: Int,
-        selectedRow: Int,
-        selectedColum: Int,
-        isSelected: Boolean
+        itemCell:ItemCell
     ): ModelSudoku{
         return repositorySudokuGame.selectedCell(
             modelSudoku = modelSudoku,
-            index = index,
-            selectedRow = selectedRow,
-            selectedColum = selectedColum,
-            isSelected = isSelected
+            itemCell = itemCell
         )
     }
 }

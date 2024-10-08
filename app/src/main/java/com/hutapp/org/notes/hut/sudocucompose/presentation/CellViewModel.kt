@@ -3,6 +3,7 @@ package com.hutapp.org.notes.hut.sudocucompose.presentation
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ItemCell
 import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ModelSudoku
 import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.CheckAllAnswerUseCase
 import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.GetListForStartedUseCase
@@ -34,15 +35,12 @@ class CellViewModel @Inject constructor(
         _selectedCell.value = GameState.ResumeGame(modelSudoku = modelSudoku)
     }
 
-    fun selectedCell(index: Int, selectedRow: Int, selectedColum: Int, isSelected: Boolean) {
+    fun selectedCell(itemCell: ItemCell) {
         val stateGame = _selectedCell.value
         if (stateGame is GameState.ResumeGame) {
             val modelSudoku = getModelSudokuUseCase(
                 modelSudoku = stateGame.modelSudoku,
-                index = index,
-                selectedRow = selectedRow,
-                selectedColum = selectedColum,
-                isSelected = isSelected
+               itemCell=itemCell
             )
             _selectedCell.value = GameState.ResumeGame(modelSudoku = modelSudoku)
         }

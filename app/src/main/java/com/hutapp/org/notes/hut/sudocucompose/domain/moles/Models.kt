@@ -13,13 +13,14 @@ data class ItemCell(
     val setValue: Int = -1,
     val isStartedCell: Boolean,
     val isSelected: Boolean = false,
+    val block: Int,
     val selectedCellIndex: Int = -1,
     val row: Int = -1,
     val column: Int = -1,
     val colorCell: ColorCellEnum = ColorCellEnum.UNSELECTED,
     val textStyle: TextStyleEnum = TextStyleEnum.UNSELECTED,
 
-)
+    )
 
 
 

@@ -21,6 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ColorCellEnum
+import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ItemCell
 import com.hutapp.org.notes.hut.sudocucompose.domain.moles.TextStyleEnum
 import com.hutapp.org.notes.hut.sudocucompose.presentation.CellViewModel
 
@@ -30,7 +31,7 @@ fun SudokuTableGrid(
     modifier: Modifier,
     stateFromViewModel: CellViewModel.GameState.ResumeGame,
     colorGrid: Color,
-    onCellClickListener: (index: Int, selectedRow: Int, selectedColum: Int, isSelected: Boolean) -> Unit,
+    onCellClickListener: (ItemCell) -> Unit,
 ) {
     var index = 0
     Card(
@@ -114,13 +115,10 @@ fun SudokuTableGrid(
                                             .modelSudoku
                                             .listItemCell
                                             .indexOf(itemModelSudoku)
-
-                                        onCellClickListener(
-                                            indexCell,
-                                            row,
-                                            colum,
-                                            true
+                                        val item = itemModelSudoku.copy(
+                                            isSelected = true
                                         )
+                                        onCellClickListener(item)
                                     },
                                 contentAlignment = Alignment.Center
                             ) {

@@ -1,5 +1,6 @@
 package com.hutapp.org.notes.hut.sudocucompose.domain.repository
 
+import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ItemCell
 import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ModelSudoku
 
 interface RepositorySudokuGame {
@@ -9,10 +10,7 @@ interface RepositorySudokuGame {
     fun unselectedCell(modelSudoku: ModelSudoku): ModelSudoku
     fun selectedCell(
         modelSudoku: ModelSudoku,
-        index: Int,
-        selectedRow: Int,
-        selectedColum: Int,
-        isSelected: Boolean
+        itemCell :ItemCell
     ): ModelSudoku
 
     fun onOffHideSelectedLineOnField(isHide: Boolean, modelSudoku: ModelSudoku): ModelSudoku
