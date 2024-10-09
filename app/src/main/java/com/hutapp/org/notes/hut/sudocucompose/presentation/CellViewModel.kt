@@ -7,6 +7,8 @@ import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ItemCell
 import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ModelSudoku
 import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.CheckAllAnswerUseCase
 import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.GetListForStartedUseCase
+import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.IsHowAlmostAnswerUseCase
+import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.IsShowCorrectAnswerUseCase
 import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.IsShowErrorAnswerUseCase
 import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.OnOffHideSelectedLineOnFieldUseCase
 import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.SelectedCellUseCase
@@ -23,7 +25,9 @@ class CellViewModel @Inject constructor(
     private val checkAllAnswerUseCase: CheckAllAnswerUseCase,
     private val unSelectedCellUseCase: UnSelectedCellUseCase,
     private val onOffHideSelectedLineOnFieldUseCase: OnOffHideSelectedLineOnFieldUseCase,
-    private val isShowErrorAnswerUseCase: IsShowErrorAnswerUseCase
+    private val isShowErrorAnswerUseCase: IsShowErrorAnswerUseCase,
+    private val isHowAlmostAnswerUseCase: IsHowAlmostAnswerUseCase,
+    private val isShowCorrectAnswerUseCase: IsShowCorrectAnswerUseCase
 ) : ViewModel() {
 
 
@@ -40,7 +44,7 @@ class CellViewModel @Inject constructor(
         if (stateGame is GameState.ResumeGame) {
             val modelSudoku = getModelSudokuUseCase(
                 modelSudoku = stateGame.modelSudoku,
-               itemCell=itemCell
+                itemCell = itemCell
             )
             _selectedCell.value = GameState.ResumeGame(modelSudoku = modelSudoku)
         }
@@ -78,6 +82,14 @@ class CellViewModel @Inject constructor(
         }
     }
 
+    fun onOffAlmostAnswer(isHow: Boolean) {
+        val state = _selectedCell.value
+        if (state is GameState.ResumeGame) {
+            val newModel = isHowAlmostAnswerUseCase(isHow = isHow, modelSudoku = state.modelSudoku)
+            _selectedCell.value = GameState.ResumeGame(modelSudoku = newModel)
+        }
+    }
+
     fun isShowErrorAnswer(isShowError: Boolean) {
         val state = _selectedCell.value
         if (state is GameState.ResumeGame) {
@@ -87,6 +99,14 @@ class CellViewModel @Inject constructor(
         }
     }
 
+    fun onOffCorrectAnswer(isShow: Boolean) {
+        val state = _selectedCell.value
+        if (state is GameState.ResumeGame) {
+            val newModel =
+                isShowCorrectAnswerUseCase(isShow = isShow, modelSudoku = state.modelSudoku)
+            _selectedCell.value = GameState.ResumeGame(modelSudoku = newModel)
+        }
+    }
 
     sealed class GameState() {
         object Initial : GameState()
@@ -105,5 +125,6 @@ class CellViewModel @Inject constructor(
             _selectedCell.value = GameState.ResumeGame(modelSudoku = newModelSudoku)
         }
     }
+
 
 }

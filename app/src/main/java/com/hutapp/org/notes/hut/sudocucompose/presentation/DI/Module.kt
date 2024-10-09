@@ -5,6 +5,8 @@ import com.hutapp.org.notes.hut.sudocucompose.data.repository.RepositorySudokuGa
 import com.hutapp.org.notes.hut.sudocucompose.domain.repository.RepositorySudokuGame
 import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.CheckAllAnswerUseCase
 import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.GetListForStartedUseCase
+import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.IsHowAlmostAnswerUseCase
+import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.IsShowCorrectAnswerUseCase
 import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.IsShowErrorAnswerUseCase
 import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.OnOffHideSelectedLineOnFieldUseCase
 import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.SelectedCellUseCase
@@ -64,5 +66,15 @@ class Module {
     @Provides
     fun provideIsShowErrorAnswerUseCase(repositorySudokuGame: RepositorySudokuGame): IsShowErrorAnswerUseCase {
         return IsShowErrorAnswerUseCase(repositorySudokuGame = repositorySudokuGame)
+    }
+
+    @Provides
+    fun provideIsHowAlmostAnswerUseCase(repositorySudokuGame: RepositorySudokuGame): IsHowAlmostAnswerUseCase {
+        return IsHowAlmostAnswerUseCase(repositorySudokuGame = repositorySudokuGame)
+    }
+
+    @Provides
+    fun provideIsShowCorrectAnswerUseCase(repositorySudokuGame: RepositorySudokuGame): IsShowCorrectAnswerUseCase {
+        return IsShowCorrectAnswerUseCase(repositorySudokuGame = repositorySudokuGame)
     }
 }

@@ -48,8 +48,15 @@ class MainActivity : ComponentActivity() {
                                 },
                                 onCheckedIsHideSelected = { isHide ->
                                     cellViewModel.onOffHideSelected(isHide = isHide)
-                                }, onCheckedIsShowErrorAnswer = { isShowError ->
+                                },
+                                onCheckedIsShowErrorAnswer = { isShowError ->
                                     cellViewModel.isShowErrorAnswer(isShowError = isShowError)
+                                },
+                                onCheckIsShowAlmostAnswer = { isShowAlmostAnswer ->
+                                    cellViewModel.onOffAlmostAnswer(isHow = isShowAlmostAnswer)
+                                },
+                                onCheckIsShowAllAnswerCorrect = {isShow->
+                                    cellViewModel.onOffCorrectAnswer(isShow = isShow)
                                 },
                                 navigateOnScreenVictory = {
                                     navHostController.navigate(Screens.Victory.route)

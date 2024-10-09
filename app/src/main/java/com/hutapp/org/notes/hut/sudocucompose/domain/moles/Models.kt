@@ -5,6 +5,8 @@ data class ModelSudoku(
     val hasSelectedCells: Boolean = false,
     val isHideSelected: Boolean = false,
     val isShowErrorAnswer: Boolean = false,
+    val isShowAlmostAnswer: Boolean = false,
+    val isShowCorrectAnswer: Boolean = false,
     val listItemCell: List<ItemCell>
 )
 

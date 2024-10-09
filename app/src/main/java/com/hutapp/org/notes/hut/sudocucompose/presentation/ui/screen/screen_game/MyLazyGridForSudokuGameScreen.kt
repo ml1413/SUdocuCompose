@@ -44,10 +44,12 @@ import kotlinx.coroutines.delay
 fun MyLazyGridForSudokuGameScreen(
     modifier: Modifier = Modifier,
     cellViewModel: CellViewModel,
-    onBottomSheetDismissRequest:()->Unit,
+    onBottomSheetDismissRequest: () -> Unit,
     navigateOnScreenVictory: () -> Unit,
     onCheckedIsHideSelected: (check: Boolean) -> Unit,
     onCheckedIsShowErrorAnswer: (check: Boolean) -> Unit,
+    onCheckIsShowAlmostAnswer: (Boolean) -> Unit,
+    onCheckIsShowAllAnswerCorrect: (Boolean) -> Unit,
 ) {
     val sudokuViewModelState = cellViewModel.selectedCell.observeAsState().value
     if (sudokuViewModelState is CellViewModel.GameState.ResumeGame) {
@@ -113,7 +115,9 @@ fun MyLazyGridForSudokuGameScreen(
                         openBottomSheet.value = false
                     },
                     onCheckedIsHideSelected = onCheckedIsHideSelected,
-                    onCheckedIsShowErrorAnswer = onCheckedIsShowErrorAnswer
+                    onCheckedIsShowErrorAnswer = onCheckedIsShowErrorAnswer,
+                    onCheckIsShowAlmostAnswer = onCheckIsShowAlmostAnswer,
+                    onCheckIsShowAllAnswerCorrect = onCheckIsShowAllAnswerCorrect
                 )
             }
         }

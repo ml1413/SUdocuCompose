@@ -1,5 +1,6 @@
 package com.hutapp.org.notes.hut.sudocucompose.data.repository
 
+import androidx.compose.runtime.rememberUpdatedState
 import com.hutapp.org.notes.hut.sudocucompose.data.SudokuGames
 import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ItemCell
 import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ModelSudoku
@@ -12,7 +13,7 @@ class RepositorySudokuGameImpl @Inject constructor
 ) : RepositorySudokuGame {
     override fun selectedCell(
         modelSudoku: ModelSudoku,
-        itemCell :ItemCell
+        itemCell: ItemCell
     ): ModelSudoku {
         return sudokuGames.selectedCell(
             modelSudoku = modelSudoku,
@@ -29,6 +30,14 @@ class RepositorySudokuGameImpl @Inject constructor
 
     override fun isShowErrorAnswer(isShowError: Boolean, modelSudoku: ModelSudoku): ModelSudoku {
         return sudokuGames.isShowErrorAnswer(isShowError = isShowError, modelSudoku = modelSudoku)
+    }
+
+    override fun isShowAlmostAnswer(isHow: Boolean, modelSudoku: ModelSudoku): ModelSudoku {
+        return sudokuGames.isShowAlmostAnswer(isHow = isHow, modelSudoku = modelSudoku)
+    }
+
+    override fun isShowCorrectAnswer(isShow: Boolean, modelSudoku: ModelSudoku): ModelSudoku {
+        return sudokuGames.isShowCorrectAnswer(isShow = isShow, modelSudoku = modelSudoku)
     }
 
     override fun getListForStated(): ModelSudoku {

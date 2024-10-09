@@ -14,10 +14,20 @@ class SudokuGames @Inject constructor() {
         return modelSudoku.copy(isShowErrorAnswer = isShowError)
     }
 
+    /**on off almost answer 8 out of 9 ___________________________________________________________*/
+    fun isShowAlmostAnswer(isHow: Boolean, modelSudoku: ModelSudoku): ModelSudoku {
+        return modelSudoku.copy(isShowAlmostAnswer = isHow)
+    }
+
     /** on off hide selected line_________________________________________________________________*/
     fun onOffHideSelectedLineOnField(isHide: Boolean, modelSudoku: ModelSudoku): ModelSudoku {
         Log.d("TAG1", "onOffHideSelectedLineOnField: ")
         return modelSudoku.copy(isHideSelected = isHide)
+    }
+
+    /**on of correct answer 9 out of 9 row column block___________________________________________*/
+    fun isShowCorrectAnswer(isShow: Boolean, modelSudoku: ModelSudoku): ModelSudoku {
+        return modelSudoku.copy(isShowCorrectAnswer = isShow)
     }
 
     /**check all answer __________________________________________________________________________*/
@@ -44,52 +54,49 @@ class SudokuGames @Inject constructor() {
         modelSudoku: ModelSudoku,
         itemCell: ItemCell
     ): ModelSudoku {
-        val listIndexFromBlock = getIndexCellInSelectedBlock(index = itemCell.selectedCellIndex)
+        // get unselected list______________________________________________________________________
+        val unselectedList = getListUnselectedItem(modelSudoku = modelSudoku)
+        // if selected is the same exit of fun _____________________________________________________
+        if (modelSudoku.listItemCell.contains(itemCell))
+            return modelSudoku.copy(listItemCell = unselectedList, hasSelectedCells = false)
+        //set color and text on cells_______________________________________________________________
+        val newList = unselectedList.map { itItem ->
+            // text style for text on cell (if error color red)
+            val textStyleErrorOrNot =
+                getTextStyleErrorOrNotOnLieAndBlock(
+                    itemCell = itItem,
+                    modelSudoku = modelSudoku
+                )
 
-        val newListCells = getListUnselectedItem(modelSudoku = modelSudoku)
-            .map { itItem ->
-                // text style for text on cell (if error color red)
-                val textStyleErrorOrNot =
-                    getTextStyleErrorOrNotOnLieAndBlock(
-                        itemCell = itItem,
-                        modelSudoku = modelSudoku
+            // set new color on cells
+            when {
+                itItem.selectedCellIndex == itemCell.selectedCellIndex -> {
+                    itItem.copy(
+                        isSelected = itemCell.isSelected,
+                        colorCell = ColorCellEnum.SELECTED_CELL,
+                        textStyle = TextStyleEnum.ON_SELECTED_LINE_OR_BLOCK_NO_STARTED
                     )
-
-                // set new color on cells
-                when {
-                    itItem.selectedCellIndex == itemCell.selectedCellIndex -> {
-                        itItem.copy(
-                            isSelected = itemCell.isSelected,
-                            colorCell = ColorCellEnum.SELECTED_CELL,
-                            textStyle = TextStyleEnum.ON_SELECTED_LINE_OR_BLOCK_NO_STARTED
-                        )
-                    }
-
-                    itItem.column == itemCell.column || itItem.row == itemCell.row -> {
-                        itItem.copy(
-                            colorCell =
-                            if (itItem.isStartedCell) ColorCellEnum.STARTED_CELL_ON_LINE else ColorCellEnum.SELECT_LINE,
-                            textStyle = textStyleErrorOrNot
-                        )
-                    }
-
-//                    listIndexFromBlock.contains(itemCell.selectedCellIndex) -> {
-//                        itemCell.copy(
-//                            colorCell = if (itemCell.isStartedCell) ColorCellEnum.STARTED_CELL_ON_LINE else ColorCellEnum.SELECTED_BLOCK,
-//                            textStyle = textStyleErrorOrNot
-//                        )
-//                    }
-                    itItem.block == itemCell.block -> {
-                        itItem.copy(
-                            colorCell = if (itItem.isStartedCell) ColorCellEnum.STARTED_CELL_ON_LINE else ColorCellEnum.SELECTED_BLOCK,
-                            textStyle = textStyleErrorOrNot
-                        )
-                    }
-
-                    else -> itItem
                 }
+
+                itItem.column == itemCell.column || itItem.row == itemCell.row -> {
+                    itItem.copy(
+                        colorCell =
+                        if (itItem.isStartedCell) ColorCellEnum.STARTED_CELL_ON_LINE else ColorCellEnum.SELECT_LINE,
+                        textStyle = textStyleErrorOrNot
+                    )
+                }
+
+                itItem.block == itemCell.block -> {
+                    itItem.copy(
+                        colorCell = if (itItem.isStartedCell) ColorCellEnum.STARTED_CELL_ON_LINE else ColorCellEnum.SELECTED_BLOCK,
+                        textStyle = textStyleErrorOrNot
+                    )
+                }
+
+                else -> itItem
             }
-        return modelSudoku.copy(listItemCell = newListCells, hasSelectedCells = true)
+        }
+        return modelSudoku.copy(listItemCell = newList, hasSelectedCells = true)
     }
 
 
@@ -206,7 +213,7 @@ class SudokuGames @Inject constructor() {
         return textStyleErrorOrNotFotLineAndBlock
     }
 
-    private fun getStaleTextErrorOrNotForCell(
+    private fun getStyleTextErrorOrNotForCell(
         itemCell: ItemCell,
         modelSudoku: ModelSudoku,
         rowColumnBox: Triple<List<Int>, List<Int>, List<Int>>
@@ -214,15 +221,16 @@ class SudokuGames @Inject constructor() {
         val textStyleErrorOrNot =
             if (itemCell.setValue != itemCell.startedValue && modelSudoku.isShowErrorAnswer && itemCell.setValue > 0)
                 TextStyleEnum.ERROR
-            else if (rowColumnBox.first[itemCell.column - 1] == 8 ||
-                rowColumnBox.second[itemCell.row - 1] == 8 ||
-                rowColumnBox.third[itemCell.block] == 8
+            else if (
+                (rowColumnBox.first[itemCell.column - 1] == 8 && modelSudoku.isShowAlmostAnswer) ||
+                (rowColumnBox.second[itemCell.row - 1] == 8 && modelSudoku.isShowAlmostAnswer) ||
+                (rowColumnBox.third[itemCell.block] == 8 && modelSudoku.isShowAlmostAnswer)
             )
                 TextStyleEnum.ALMOST
             else if (
-                rowColumnBox.first[itemCell.column - 1] == 9 ||
-                rowColumnBox.second[itemCell.row - 1] == 9 ||
-                rowColumnBox.third[itemCell.block] == 9
+                (rowColumnBox.first[itemCell.column - 1] == 9 && modelSudoku.isShowCorrectAnswer) ||
+                (rowColumnBox.second[itemCell.row - 1] == 9 && modelSudoku.isShowCorrectAnswer) ||
+                (rowColumnBox.third[itemCell.block] == 9 && modelSudoku.isShowCorrectAnswer)
             )
                 TextStyleEnum.ALL_IS_CORRECT
             else
@@ -230,28 +238,6 @@ class SudokuGames @Inject constructor() {
         return textStyleErrorOrNot
     }
 
-    private fun getIndexCellInSelectedBlock(index: Int): List<Int> {
-        // Ширина и высота сетки судоку
-        val gridSize = 9
-        val blockSize = 3
-
-        // Вычисляем строку и столбец ячейки
-        val rowLine = index / gridSize
-        val colLine = index % gridSize
-
-        // Вычисляем левый верхний угол блока
-        val blockRowStart = (rowLine / blockSize) * blockSize
-        val blockColStart = (colLine / blockSize) * blockSize
-
-        val blockIndices = mutableListOf<Int>()
-        for (r in blockRowStart until blockRowStart + blockSize) {
-            for (c in blockColStart until blockColStart + blockSize) {
-                blockIndices.add(r * gridSize + c)
-            }
-        }
-        return blockIndices.toList()
-
-    }
 
     private fun getListUnselectedItem(modelSudoku: ModelSudoku): List<ItemCell> {
         val rowColumnPair = getRowsAndColumnsCountCorrectAnswer(modelSudoku = modelSudoku)
@@ -260,7 +246,7 @@ class SudokuGames @Inject constructor() {
             .map { itemCell ->
                 // text style for text on cell (if error color red)
                 val textStyleErrorOrAlmostORNot =
-                    getStaleTextErrorOrNotForCell(itemCell, modelSudoku, rowColumnPair)
+                    getStyleTextErrorOrNotForCell(itemCell, modelSudoku, rowColumnPair)
                 // clear all selected reset color
 
                 when {

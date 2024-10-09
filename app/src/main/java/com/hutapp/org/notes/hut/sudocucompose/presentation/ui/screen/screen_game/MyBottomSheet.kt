@@ -15,7 +15,6 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -30,14 +29,16 @@ import com.hutapp.org.notes.hut.sudocucompose.presentation.CellViewModel
 fun MyBottomSheet(
     modifier: Modifier = Modifier,
     sudokuViewModelState: CellViewModel.GameState.ResumeGame,
-    onCheckedIsHideSelected: (check: Boolean) -> Unit,
-    onCheckedIsShowErrorAnswer: (check: Boolean) -> Unit,
+    onCheckedIsHideSelected: (Boolean) -> Unit,
+    onCheckedIsShowErrorAnswer: (Boolean) -> Unit,
+    onCheckIsShowAlmostAnswer: (Boolean) -> Unit,
+    onCheckIsShowAllAnswerCorrect: (Boolean) -> Unit,
     onDismissRequest: () -> Unit
 ) {
     val bottomSheetState = rememberModalBottomSheetState()
 
     ModalBottomSheet(
-        onDismissRequest =  onDismissRequest,
+        onDismissRequest = onDismissRequest,
         sheetState = bottomSheetState,
         containerColor = MaterialTheme.colorScheme.background
     ) {
@@ -45,6 +46,7 @@ fun MyBottomSheet(
             modifier = modifier.weight(1f),
             contentPadding = PaddingValues(vertical = 32.dp)
         ) {
+            //Hide selected_________________________________________________________________________
             item {
                 MyCheckBoxLine(
                     modifier = modifier,
@@ -55,6 +57,7 @@ fun MyBottomSheet(
                     }
                 )
             }
+            //Show wrong answer ____________________________________________________________________
             item {
                 MyCheckBoxLine(
                     modifier = modifier,
@@ -62,6 +65,26 @@ fun MyBottomSheet(
                     check = sudokuViewModelState.modelSudoku.isShowErrorAnswer,
                     onChecked = { isShowError ->
                         onCheckedIsShowErrorAnswer(isShowError)
+                    }
+                )
+            }   //show almost answer row column block 8 out of 9____________________________________
+            item {
+                MyCheckBoxLine(
+                    modifier = modifier,
+                    text = stringResource(R.string.show_answer_8_out_of_9),
+                    check = sudokuViewModelState.modelSudoku.isShowAlmostAnswer,
+                    onChecked = { isShowAlmost ->
+                        onCheckIsShowAlmostAnswer(isShowAlmost)
+                    }
+                )
+            }   //show correct answer row column block 9 out of 9___________________________________
+            item {
+                MyCheckBoxLine(
+                    modifier = modifier,
+                    text = stringResource(R.string.show_answer_9_out_of_9),
+                    check = sudokuViewModelState.modelSudoku.isShowCorrectAnswer,
+                    onChecked = { isShowCorrectAnswer ->
+                        onCheckIsShowAllAnswerCorrect(isShowCorrectAnswer)
                     }
                 )
             }

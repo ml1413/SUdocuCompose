@@ -10,9 +10,11 @@ interface RepositorySudokuGame {
     fun unselectedCell(modelSudoku: ModelSudoku): ModelSudoku
     fun selectedCell(
         modelSudoku: ModelSudoku,
-        itemCell :ItemCell
+        itemCell: ItemCell
     ): ModelSudoku
 
     fun onOffHideSelectedLineOnField(isHide: Boolean, modelSudoku: ModelSudoku): ModelSudoku
     fun isShowErrorAnswer(isShowError: Boolean, modelSudoku: ModelSudoku): ModelSudoku
+    fun isShowAlmostAnswer(isHow: Boolean, modelSudoku: ModelSudoku): ModelSudoku
+    fun isShowCorrectAnswer(isShow: Boolean, modelSudoku: ModelSudoku): ModelSudoku
 }

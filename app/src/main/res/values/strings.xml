@@ -3,4 +3,6 @@
     <string name="start">Start</string>
     <string name="hide_select">Hide select</string>
     <string name="show_wrong_answer">Show wrong answer</string>
+    <string name="show_answer_8_out_of_9">Show  answer 8 out of 9</string>
+    <string name="show_answer_9_out_of_9">Show answer 9 out of 9</string>
 </resources>
