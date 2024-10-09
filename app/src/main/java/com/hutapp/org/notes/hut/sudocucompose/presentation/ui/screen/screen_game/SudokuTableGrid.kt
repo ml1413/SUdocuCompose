@@ -101,13 +101,6 @@ fun SudokuTableGrid(
                                         color = colorGrid,
                                     )
                                     .padding(1.dp)
-//                                    .border(
-//                                        width = 1.dp,
-//                                        color =
-//                                        if (itemModelSudoku.colorCell == ColorCellEnum.STARTED_CELL_ON_LINE)
-//                                            MaterialTheme.colorScheme.primary
-//                                        else Color.Unspecified,
-//                                    )
                                     .clickable(
                                         enabled = itemModelSudoku.isStartedCell.not()
                                     ) {
