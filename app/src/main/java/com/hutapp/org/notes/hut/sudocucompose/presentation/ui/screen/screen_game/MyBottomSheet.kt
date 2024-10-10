@@ -33,6 +33,7 @@ fun MyBottomSheet(
     onCheckedIsShowErrorAnswer: (Boolean) -> Unit,
     onCheckIsShowAlmostAnswer: (Boolean) -> Unit,
     onCheckIsShowAllAnswerCorrect: (Boolean) -> Unit,
+    onCheckIsShowAnimationHint: (Boolean) -> Unit,
     onDismissRequest: () -> Unit
 ) {
     val bottomSheetState = rememberModalBottomSheetState()
@@ -67,7 +68,8 @@ fun MyBottomSheet(
                         onCheckedIsShowErrorAnswer(isShowError)
                     }
                 )
-            }   //show almost answer row column block 8 out of 9____________________________________
+            }
+            //show almost answer row column block 8 out of 9____________________________________
             item {
                 MyCheckBoxLine(
                     modifier = modifier,
@@ -77,7 +79,19 @@ fun MyBottomSheet(
                         onCheckIsShowAlmostAnswer(isShowAlmost)
                     }
                 )
-            }   //show correct answer row column block 9 out of 9___________________________________
+            }
+            //show almost Animation hint  8 out of 9____________________________________
+            item {
+                MyCheckBoxLine(
+                    modifier = modifier,
+                    text = stringResource(R.string.show_animation_hint_8_out_of_9),
+                    check = sudokuViewModelState.modelSudoku.isShowAnimationHint,
+                    onChecked = { isShowAnimationHint ->
+                        onCheckIsShowAnimationHint(isShowAnimationHint)
+                    }
+                )
+            }
+            //show correct answer row column block 9 out of 9___________________________________
             item {
                 MyCheckBoxLine(
                     modifier = modifier,

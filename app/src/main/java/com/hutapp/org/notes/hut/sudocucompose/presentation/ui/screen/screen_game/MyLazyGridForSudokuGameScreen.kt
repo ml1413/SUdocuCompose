@@ -36,6 +36,7 @@ fun MyLazyGridForSudokuGameScreen(
     onCheckedIsShowErrorAnswer: (check: Boolean) -> Unit,
     onCheckIsShowAlmostAnswer: (Boolean) -> Unit,
     onCheckIsShowAllAnswerCorrect: (Boolean) -> Unit,
+    onCheckIsShowAnimationHint: (Boolean) -> Unit
 ) {
     val sudokuViewModelState = cellViewModel.selectedCell.observeAsState().value
     if (sudokuViewModelState is CellViewModel.GameState.ResumeGame) {
@@ -45,7 +46,6 @@ fun MyLazyGridForSudokuGameScreen(
         val openBottomSheet = rememberSaveable { mutableStateOf(false) }
         val colorGrid = MaterialTheme.colorScheme.onBackground
         val shape12Dp = RoundedCornerShape(12.dp, 12.dp, 16.dp, 16.dp)
-        val isAnimated = remember { mutableStateOf(true) }
         Log.d("TAG1", "MyLazyGridForSudokuGameScreen: ")
         Box(
             modifier = modifier
@@ -64,7 +64,6 @@ fun MyLazyGridForSudokuGameScreen(
 
                 SudokuTableGrid(
                     modifier = modifier,
-                    isAnimated =isAnimated,
                     stateFromViewModel = sudokuViewModelState,
                     colorGrid = colorGrid,
                     onCellClickListener = { itemCell ->
@@ -104,7 +103,8 @@ fun MyLazyGridForSudokuGameScreen(
                     onCheckedIsHideSelected = onCheckedIsHideSelected,
                     onCheckedIsShowErrorAnswer = onCheckedIsShowErrorAnswer,
                     onCheckIsShowAlmostAnswer = onCheckIsShowAlmostAnswer,
-                    onCheckIsShowAllAnswerCorrect = onCheckIsShowAllAnswerCorrect
+                    onCheckIsShowAllAnswerCorrect = onCheckIsShowAllAnswerCorrect,
+                    onCheckIsShowAnimationHint = onCheckIsShowAnimationHint
                 )
             }
         }

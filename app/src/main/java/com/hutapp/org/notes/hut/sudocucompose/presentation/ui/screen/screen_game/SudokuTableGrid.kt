@@ -1,5 +1,7 @@
 package com.hutapp.org.notes.hut.sudocucompose.presentation.ui.screen.screen_game
 
+import android.telephony.CellInfoCdma
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -11,13 +13,14 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -40,7 +43,6 @@ import kotlinx.coroutines.delay
 @Composable
 fun SudokuTableGrid(
     modifier: Modifier,
-    isAnimated: MutableState<Boolean>,
     stateFromViewModel: CellViewModel.GameState.ResumeGame,
     colorGrid: Color,
     onCellClickListener: (ItemCell) -> Unit,
@@ -51,7 +53,8 @@ fun SudokuTableGrid(
     val colorCorrectAnswer =
         if (isSystemInDarkTheme()) colorCorrectAnswerDark else colorCorrectAnswer
 
-    val almostHintState = almostHintState()
+    val almostHintState =
+        almostHintAnimationState(isShowAnimation = stateFromViewModel.modelSudoku.isShowAnimationHint)
 
     var index = 0
     Card(
@@ -123,8 +126,13 @@ fun SudokuTableGrid(
                                     .padding(2.dp)
                                     .border(
                                         width = 1.dp,
-                                        color =
-                                        when {
+                                        shape = RoundedCornerShape(
+                                            topStart = if (itemModelSudoku.selectedCellIndex == 0) 12.dp else 0.dp,
+                                            topEnd = if (itemModelSudoku.selectedCellIndex == 8) 12.dp else 0.dp,
+                                            bottomStart = if (itemModelSudoku.selectedCellIndex == 72) 12.dp else 0.dp,
+                                            bottomEnd = if (itemModelSudoku.selectedCellIndex == 80) 12.dp else 0.dp,
+                                        ),
+                                        color = when {
                                             itemModelSudoku.almostHintRow == AlmostHint.ROW
                                                     && almostHintState == AlmostHint.ROW
                                             -> colorAlmost
@@ -218,27 +226,30 @@ fun SudokuTableGrid(
 }
 
 @Composable
-private fun almostHintState(): AlmostHint {
-    val almostHintState = remember { mutableStateOf(AlmostHint.INITIAL) }.apply {
-        LaunchedEffect(null) {
-            listOf(
-                AlmostHint.INITIAL,
-                AlmostHint.ROW,
-                AlmostHint.INITIAL,
-                AlmostHint.COLUMN,
-                AlmostHint.INITIAL,
-                AlmostHint.BLOCK
-            ).apply {
-                repeat(1000) {
-                    forEach { almostHint ->
-                        delay(3000)
-                        value = almostHint
+private fun almostHintAnimationState(isShowAnimation: Boolean): AlmostHint {
+    val almostHintState = remember { mutableStateOf(AlmostHint.INITIAL) }
+        .apply {
+            if (isShowAnimation)
+                LaunchedEffect(null) {
+                    listOf(
+                        AlmostHint.INITIAL,
+                        AlmostHint.ROW,
+                        AlmostHint.INITIAL,
+                        AlmostHint.COLUMN,
+                        AlmostHint.INITIAL,
+                        AlmostHint.BLOCK
+                    ).apply {
+                        repeat(1000) {
+                            forEach { almostHint ->
+                                Log.d("TAG1", "LaunchedEffect: ")
+                                delay(3000)
+                                value = almostHint
+                            }
+                        }
                     }
-                }
-            }
 
-        }
-    }.value
+                }
+        }.value
     return almostHintState
 }
 

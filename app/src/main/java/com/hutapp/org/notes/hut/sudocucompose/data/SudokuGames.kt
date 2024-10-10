@@ -26,6 +26,11 @@ class SudokuGames @Inject constructor() {
         return modelSudoku.copy(isHideSelected = isHide)
     }
 
+    /** on off animation hint almost answer 8 out of 9____________________________________________*/
+    fun onOffAnimationHint(isShowAnimationHint: Boolean, modelSudoku: ModelSudoku): ModelSudoku {
+        return modelSudoku.copy(isShowAnimationHint = isShowAnimationHint)
+    }
+
     /**on of correct answer 9 out of 9 row column block___________________________________________*/
     fun isShowCorrectAnswer(isShow: Boolean, modelSudoku: ModelSudoku): ModelSudoku {
         return modelSudoku.copy(isShowCorrectAnswer = isShow)
@@ -143,15 +148,17 @@ class SudokuGames @Inject constructor() {
 
         return ModelSudoku(listItemCell = newList)
     }
-
+    /** Other fun _________________________________________________________________________________
+    _______________________________________________________________________________________________
+    _____________________________________________________________________________________________*/
 
     private fun generateSudoku(): List<Int> {
-        val grid = Array(9) { IntArray(9) }
+        val grid = MutableList(9) { MutableList<Int>(9){0} }
         fillGrid(grid)
         return grid.flatMap { it.toList() }
     }
 
-    private fun fillGrid(grid: Array<IntArray>): Boolean {
+    private fun fillGrid(grid: MutableList<MutableList<Int>>): Boolean {
         for (i in 0 until 9) {
             for (j in 0 until 9) {
                 if (grid[i][j] == 0) {
@@ -172,7 +179,7 @@ class SudokuGames @Inject constructor() {
         return true
     }
 
-    private fun isSafe(grid: Array<IntArray>, row: Int, col: Int, num: Int): Boolean {
+    private fun isSafe(grid: List<List<Int>>, row: Int, col: Int, num: Int): Boolean {
         for (i in 0 until 9) {
             if (grid[row][i] == num || grid[i][col] == num) {
                 return false
@@ -190,11 +197,55 @@ class SudokuGames @Inject constructor() {
         }
         return true
     }
+    // todo need delete
+//    private fun generateSudoku(): List<Int> {
+//        val grid = Array(9) { IntArray(9) }
+//        fillGrid(grid)
+//        return grid.flatMap { it.toList() }
+//    }
+//
+//    private fun fillGrid(grid: Array<IntArray>): Boolean {
+//        for (i in 0 until 9) {
+//            for (j in 0 until 9) {
+//                if (grid[i][j] == 0) {
+//                    val numbers = (1..9).shuffled()
+//                    for (num in numbers) {
+//                        if (isSafe(grid, i, j, num)) {
+//                            grid[i][j] = num
+//                            if (fillGrid(grid)) {
+//                                return true
+//                            }
+//                            grid[i][j] = 0
+//                        }
+//                    }
+//                    return false
+//                }
+//            }
+//        }
+//        return true
+//    }
+//
+//    private fun isSafe(grid: Array<IntArray>, row: Int, col: Int, num: Int): Boolean {
+//        for (i in 0 until 9) {
+//            if (grid[row][i] == num || grid[i][col] == num) {
+//                return false
+//            }
+//        }
+//
+//        val boxRowStart = row - row % 3
+//        val boxColStart = col - col % 3
+//        for (i in 0 until 3) {
+//            for (j in 0 until 3) {
+//                if (grid[boxRowStart + i][boxColStart + j] == num) {
+//                    return false
+//                }
+//            }
+//        }
+//        return true
+//    }
 
 
-    /** Other fun _________________________________________________________________________________
-    _______________________________________________________________________________________________
-    _____________________________________________________________________________________________*/
+
     private fun getTextStyleErrorOrNotOnLieAndBlock(
         itemCell: ItemCell,
         modelSudoku: ModelSudoku
@@ -326,18 +377,26 @@ class SudokuGames @Inject constructor() {
         itemCell: ItemCell,
         modelSudoku: ModelSudoku,
         rowColumnPair: Triple<List<Int>, List<Int>, List<Int>>
-    ) = if (rowColumnPair.first[itemCell.column - 1] == 8) AlmostHint.ROW else AlmostHint.INITIAL
+    ) = if (rowColumnPair.first[itemCell.column - 1] == 8 && modelSudoku.isShowAnimationHint)
+        AlmostHint.ROW
+    else AlmostHint.INITIAL
 
     private fun getAlmostHindColumn(
         itemCell: ItemCell,
         modelSudoku: ModelSudoku,
         rowColumnPair: Triple<List<Int>, List<Int>, List<Int>>
-    ) = if (rowColumnPair.second[itemCell.row - 1] == 8) AlmostHint.COLUMN else AlmostHint.INITIAL
+    ) = if (rowColumnPair.second[itemCell.row - 1] == 8 && modelSudoku.isShowAnimationHint)
+        AlmostHint.COLUMN
+    else AlmostHint.INITIAL
 
     private fun getAlmostHindBlock(
         itemCell: ItemCell,
         modelSudoku: ModelSudoku,
         rowColumnPair: Triple<List<Int>, List<Int>, List<Int>>
-    ) = if (rowColumnPair.third[itemCell.block] == 8) AlmostHint.BLOCK else AlmostHint.INITIAL
+    ) = if (rowColumnPair.third[itemCell.block] == 8 && modelSudoku.isShowAnimationHint)
+        AlmostHint.BLOCK else
+        AlmostHint.INITIAL
+
+
 }
 

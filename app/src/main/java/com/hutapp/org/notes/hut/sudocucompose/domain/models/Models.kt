@@ -7,6 +7,7 @@ data class ModelSudoku(
     val isShowErrorAnswer: Boolean = false,
     val isShowAlmostAnswer: Boolean = false,
     val isShowCorrectAnswer: Boolean = false,
+    val isShowAnimationHint: Boolean = false,
     val listItemCell: List<ItemCell>
 )
 

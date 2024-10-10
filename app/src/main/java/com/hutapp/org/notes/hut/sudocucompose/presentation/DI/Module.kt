@@ -6,6 +6,7 @@ import com.hutapp.org.notes.hut.sudocucompose.domain.repository.RepositorySudoku
 import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.CheckAllAnswerUseCase
 import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.GetListForStartedUseCase
 import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.IsHowAlmostAnswerUseCase
+import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.IsShowAnimationHintUseCase
 import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.IsShowCorrectAnswerUseCase
 import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.IsShowErrorAnswerUseCase
 import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.OnOffHideSelectedLineOnFieldUseCase
@@ -76,5 +77,10 @@ class Module {
     @Provides
     fun provideIsShowCorrectAnswerUseCase(repositorySudokuGame: RepositorySudokuGame): IsShowCorrectAnswerUseCase {
         return IsShowCorrectAnswerUseCase(repositorySudokuGame = repositorySudokuGame)
+    }
+
+    @Provides
+    fun provideIsShowAnimationHintUseCase(repositorySudokuGame: RepositorySudokuGame): IsShowAnimationHintUseCase {
+        return IsShowAnimationHintUseCase(repositorySudokuGame = repositorySudokuGame)
     }
 }

@@ -39,6 +39,16 @@ class RepositorySudokuGameImpl @Inject constructor
         return sudokuGames.isShowCorrectAnswer(isShow = isShow, modelSudoku = modelSudoku)
     }
 
+    override fun onOffAnimationHint(
+        isShowAnimationHint: Boolean,
+        modelSudoku: ModelSudoku
+    ): ModelSudoku {
+        return sudokuGames.onOffAnimationHint(
+            isShowAnimationHint = isShowAnimationHint,
+            modelSudoku = modelSudoku
+        )
+    }
+
     override fun getListForStated(): ModelSudoku {
         return sudokuGames.getListModelSudoku()
     }

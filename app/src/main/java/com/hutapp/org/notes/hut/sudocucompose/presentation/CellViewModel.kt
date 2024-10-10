@@ -8,6 +8,7 @@ import com.hutapp.org.notes.hut.sudocucompose.domain.models.ModelSudoku
 import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.CheckAllAnswerUseCase
 import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.GetListForStartedUseCase
 import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.IsHowAlmostAnswerUseCase
+import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.IsShowAnimationHintUseCase
 import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.IsShowCorrectAnswerUseCase
 import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.IsShowErrorAnswerUseCase
 import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.OnOffHideSelectedLineOnFieldUseCase
@@ -27,7 +28,8 @@ class CellViewModel @Inject constructor(
     private val onOffHideSelectedLineOnFieldUseCase: OnOffHideSelectedLineOnFieldUseCase,
     private val isShowErrorAnswerUseCase: IsShowErrorAnswerUseCase,
     private val isHowAlmostAnswerUseCase: IsHowAlmostAnswerUseCase,
-    private val isShowCorrectAnswerUseCase: IsShowCorrectAnswerUseCase
+    private val isShowCorrectAnswerUseCase: IsShowCorrectAnswerUseCase,
+    private val isShowAnimationHintUseCase: IsShowAnimationHintUseCase
 ) : ViewModel() {
 
 
@@ -104,6 +106,17 @@ class CellViewModel @Inject constructor(
         if (state is GameState.ResumeGame) {
             val newModel =
                 isShowCorrectAnswerUseCase(isShow = isShow, modelSudoku = state.modelSudoku)
+            _selectedCell.value = GameState.ResumeGame(modelSudoku = newModel)
+        }
+    }
+
+    fun onOffAnimationHint(isShowAnimationHint: Boolean) {
+        val state = _selectedCell.value
+        if (state is GameState.ResumeGame) {
+            val newModel = isShowAnimationHintUseCase(
+                isShowAnimationHint = isShowAnimationHint,
+                modelSudoku = state.modelSudoku
+            )
             _selectedCell.value = GameState.ResumeGame(modelSudoku = newModel)
         }
     }

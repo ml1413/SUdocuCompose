@@ -17,4 +17,5 @@ interface RepositorySudokuGame {
     fun isShowErrorAnswer(isShowError: Boolean, modelSudoku: ModelSudoku): ModelSudoku
     fun isShowAlmostAnswer(isHow: Boolean, modelSudoku: ModelSudoku): ModelSudoku
     fun isShowCorrectAnswer(isShow: Boolean, modelSudoku: ModelSudoku): ModelSudoku
+    fun onOffAnimationHint(isShowAnimationHint: Boolean, modelSudoku: ModelSudoku): ModelSudoku
 }

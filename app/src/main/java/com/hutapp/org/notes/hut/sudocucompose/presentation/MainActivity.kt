@@ -8,17 +8,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
+import com.hutapp.org.notes.hut.sudocucompose.domain.models.ModelSudoku
 import com.hutapp.org.notes.hut.sudocucompose.presentation.ui.screen.navigation.AppNavGraph
 import com.hutapp.org.notes.hut.sudocucompose.presentation.ui.screen.navigation.Screens
 import com.hutapp.org.notes.hut.sudocucompose.presentation.ui.screen.screen_game.MyLazyGridForSudokuGameScreen
-import com.hutapp.org.notes.hut.sudocucompose.presentation.ui.screen.screen_game.SudokuTableGrid
 import com.hutapp.org.notes.hut.sudocucompose.presentation.ui.screen.screen_result.ScreenVictory
 import com.hutapp.org.notes.hut.sudocucompose.presentation.ui.screen.started_screen.StartedScreen
 import com.hutapp.org.notes.hut.sudocucompose.presentation.ui.theme.SUdocuComposeTheme
@@ -62,8 +59,11 @@ class MainActivity : ComponentActivity() {
                                 onCheckIsShowAlmostAnswer = { isShowAlmostAnswer ->
                                     cellViewModel.onOffAlmostAnswer(isHow = isShowAlmostAnswer)
                                 },
-                                onCheckIsShowAllAnswerCorrect = {isShow->
+                                onCheckIsShowAllAnswerCorrect = { isShow ->
                                     cellViewModel.onOffCorrectAnswer(isShow = isShow)
+                                },
+                                onCheckIsShowAnimationHint = { isShowAnimationHint ->
+                                    cellViewModel.onOffAnimationHint(isShowAnimationHint = isShowAnimationHint)
                                 },
                                 navigateOnScreenVictory = {
                                     navHostController.navigate(Screens.Victory.route)
@@ -79,9 +79,4 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-
 }
-
-
-
-
