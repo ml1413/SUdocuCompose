@@ -3,8 +3,8 @@ package com.hutapp.org.notes.hut.sudocucompose.presentation
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ItemCell
-import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ModelSudoku
+import com.hutapp.org.notes.hut.sudocucompose.domain.models.ItemCell
+import com.hutapp.org.notes.hut.sudocucompose.domain.models.ModelSudoku
 import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.CheckAllAnswerUseCase
 import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.GetListForStartedUseCase
 import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.IsHowAlmostAnswerUseCase

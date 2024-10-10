@@ -4,6 +4,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,24 +16,43 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ColorCellEnum
-import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ItemCell
-import com.hutapp.org.notes.hut.sudocucompose.domain.moles.TextStyleEnum
+import com.hutapp.org.notes.hut.sudocucompose.domain.models.AlmostHint
+import com.hutapp.org.notes.hut.sudocucompose.domain.models.ColorCellEnum
+import com.hutapp.org.notes.hut.sudocucompose.domain.models.ItemCell
+import com.hutapp.org.notes.hut.sudocucompose.domain.models.TextStyleEnum
 import com.hutapp.org.notes.hut.sudocucompose.presentation.CellViewModel
+import com.hutapp.org.notes.hut.sudocucompose.presentation.ui.theme.colorAlmost
+import com.hutapp.org.notes.hut.sudocucompose.presentation.ui.theme.colorAlmostDark
+import com.hutapp.org.notes.hut.sudocucompose.presentation.ui.theme.colorCorrectAnswer
+import com.hutapp.org.notes.hut.sudocucompose.presentation.ui.theme.colorCorrectAnswerDark
+import kotlinx.coroutines.delay
 
 // sudoku table ________________________________________________________________________________
 @Composable
 fun SudokuTableGrid(
     modifier: Modifier,
+    isAnimated: MutableState<Boolean>,
     stateFromViewModel: CellViewModel.GameState.ResumeGame,
     colorGrid: Color,
     onCellClickListener: (ItemCell) -> Unit,
 ) {
+
+    val colorAlmost =
+        if (isSystemInDarkTheme()) colorAlmostDark else colorAlmost
+    val colorCorrectAnswer =
+        if (isSystemInDarkTheme()) colorCorrectAnswerDark else colorCorrectAnswer
+
+    val almostHintState = almostHintState()
+
     var index = 0
     Card(
         border = BorderStroke(1.dp, colorGrid),
@@ -100,14 +120,27 @@ fun SudokuTableGrid(
                                         width = 0.1.dp,
                                         color = colorGrid,
                                     )
-                                    .padding(1.dp)
+                                    .padding(2.dp)
+                                    .border(
+                                        width = 1.dp,
+                                        color =
+                                        when {
+                                            itemModelSudoku.almostHintRow == AlmostHint.ROW
+                                                    && almostHintState == AlmostHint.ROW
+                                            -> colorAlmost
+
+                                            itemModelSudoku.almostHintColumn == AlmostHint.COLUMN
+                                                    && almostHintState == AlmostHint.COLUMN -> colorAlmost
+
+                                            itemModelSudoku.almostHintBlock == AlmostHint.BLOCK
+                                                    && almostHintState == AlmostHint.BLOCK -> colorAlmost
+
+                                            else -> Color.Unspecified
+                                        }
+                                    )
                                     .clickable(
                                         enabled = itemModelSudoku.isStartedCell.not()
                                     ) {
-                                        val indexCell = stateFromViewModel
-                                            .modelSudoku
-                                            .listItemCell
-                                            .indexOf(itemModelSudoku)
                                         val item = itemModelSudoku.copy(
                                             isSelected = true
                                         )
@@ -118,13 +151,13 @@ fun SudokuTableGrid(
                                 val numForCell =
                                     getTestForCell(itemItemCell = itemModelSudoku)
                                 Box(contentAlignment = Alignment.Center) {
-
                                     when (itemModelSudoku.textStyle) {
                                         TextStyleEnum.UNSELECTED -> {
                                             Text(text = numForCell)
                                         }
 
                                         TextStyleEnum.ON_STARTED_CELL -> {
+
                                             Text(
                                                 text = numForCell,
                                                 fontWeight = FontWeight.ExtraBold
@@ -163,13 +196,13 @@ fun SudokuTableGrid(
                                         TextStyleEnum.ALMOST ->
                                             Text(
                                                 text = numForCell,
-                                                color = Color.Yellow
+                                                color = colorAlmost
                                             )
 
                                         TextStyleEnum.ALL_IS_CORRECT -> {
                                             Text(
                                                 text = numForCell,
-                                                color = Color.Green
+                                                color = colorCorrectAnswer
                                             )
                                         }
                                     }
@@ -182,5 +215,30 @@ fun SudokuTableGrid(
             }
         }
     }
+}
+
+@Composable
+private fun almostHintState(): AlmostHint {
+    val almostHintState = remember { mutableStateOf(AlmostHint.INITIAL) }.apply {
+        LaunchedEffect(null) {
+            listOf(
+                AlmostHint.INITIAL,
+                AlmostHint.ROW,
+                AlmostHint.INITIAL,
+                AlmostHint.COLUMN,
+                AlmostHint.INITIAL,
+                AlmostHint.BLOCK
+            ).apply {
+                repeat(1000) {
+                    forEach { almostHint ->
+                        delay(3000)
+                        value = almostHint
+                    }
+                }
+            }
+
+        }
+    }.value
+    return almostHintState
 }
 

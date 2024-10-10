@@ -1,4 +1,4 @@
-package com.hutapp.org.notes.hut.sudocucompose.domain.moles
+package com.hutapp.org.notes.hut.sudocucompose.domain.models
 
 data class ModelSudoku(
     val isVictory: Boolean = false,
@@ -21,9 +21,14 @@ data class ItemCell(
     val column: Int = -1,
     val colorCell: ColorCellEnum = ColorCellEnum.UNSELECTED,
     val textStyle: TextStyleEnum = TextStyleEnum.UNSELECTED,
+    val almostHintRow: AlmostHint = AlmostHint.INITIAL,
+    val almostHintColumn: AlmostHint = AlmostHint.INITIAL,
+    val almostHintBlock: AlmostHint = AlmostHint.INITIAL,
 
     )
 
 
-
+enum class AlmostHint {
+    INITIAL, ROW, COLUMN, BLOCK
+}
 

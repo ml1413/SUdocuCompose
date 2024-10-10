@@ -1,7 +1,7 @@
 package com.hutapp.org.notes.hut.sudocucompose.domain.repository
 
-import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ItemCell
-import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ModelSudoku
+import com.hutapp.org.notes.hut.sudocucompose.domain.models.ItemCell
+import com.hutapp.org.notes.hut.sudocucompose.domain.models.ModelSudoku
 
 interface RepositorySudokuGame {
     fun getListForStated(): ModelSudoku

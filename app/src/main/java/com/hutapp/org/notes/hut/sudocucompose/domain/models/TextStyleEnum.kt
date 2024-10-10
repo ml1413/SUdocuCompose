@@ -1,4 +1,4 @@
-package com.hutapp.org.notes.hut.sudocucompose.domain.moles
+package com.hutapp.org.notes.hut.sudocucompose.domain.models
 
 
 enum class TextStyleEnum {

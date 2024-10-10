@@ -1,9 +1,8 @@
 package com.hutapp.org.notes.hut.sudocucompose.data.repository
 
-import androidx.compose.runtime.rememberUpdatedState
 import com.hutapp.org.notes.hut.sudocucompose.data.SudokuGames
-import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ItemCell
-import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ModelSudoku
+import com.hutapp.org.notes.hut.sudocucompose.domain.models.ItemCell
+import com.hutapp.org.notes.hut.sudocucompose.domain.models.ModelSudoku
 import com.hutapp.org.notes.hut.sudocucompose.domain.repository.RepositorySudokuGame
 import javax.inject.Inject
 

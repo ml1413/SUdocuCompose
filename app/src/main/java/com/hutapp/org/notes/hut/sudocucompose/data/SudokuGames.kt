@@ -1,10 +1,11 @@
 package com.hutapp.org.notes.hut.sudocucompose.data
 
 import android.util.Log
-import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ColorCellEnum
-import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ItemCell
-import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ModelSudoku
-import com.hutapp.org.notes.hut.sudocucompose.domain.moles.TextStyleEnum
+import com.hutapp.org.notes.hut.sudocucompose.domain.models.AlmostHint
+import com.hutapp.org.notes.hut.sudocucompose.domain.models.ColorCellEnum
+import com.hutapp.org.notes.hut.sudocucompose.domain.models.ItemCell
+import com.hutapp.org.notes.hut.sudocucompose.domain.models.ModelSudoku
+import com.hutapp.org.notes.hut.sudocucompose.domain.models.TextStyleEnum
 import javax.inject.Inject
 
 // todo нужно сделать отключение жолтого и зеленого
@@ -254,8 +255,14 @@ class SudokuGames @Inject constructor() {
                         isSelected = false,
                         colorCell = ColorCellEnum.UNSELECTED,
                         textStyle = textStyleErrorOrAlmostORNot,
+                        almostHintColumn =
+                        getAlmostHindColumn(itemCell, modelSudoku, rowColumnPair),
+                        almostHintRow =
+                        getAlmostHindRow(itemCell, modelSudoku, rowColumnPair),
+                        almostHintBlock =
+                        getAlmostHindBlock(itemCell, modelSudoku, rowColumnPair)
 
-                        )
+                    )
 
                     itemCell.isStartedCell -> {
                         itemCell.copy(
@@ -265,14 +272,26 @@ class SudokuGames @Inject constructor() {
                                 textStyleErrorOrAlmostORNot
                             else
                                 TextStyleEnum.ON_STARTED_CELL,
+                            almostHintColumn =
+                            getAlmostHindColumn(itemCell, modelSudoku, rowColumnPair),
+                            almostHintRow =
+                            getAlmostHindRow(itemCell, modelSudoku, rowColumnPair),
+                            almostHintBlock =
+                            getAlmostHindBlock(itemCell, modelSudoku, rowColumnPair)
+                        )
 
-                            )
                     }
 
                     !itemCell.isStartedCell -> {
                         itemCell.copy(
                             colorCell = ColorCellEnum.UNSELECTED,
                             textStyle = textStyleErrorOrAlmostORNot,
+                            almostHintColumn =
+                            getAlmostHindColumn(itemCell, modelSudoku, rowColumnPair),
+                            almostHintRow =
+                            getAlmostHindRow(itemCell, modelSudoku, rowColumnPair),
+                            almostHintBlock =
+                            getAlmostHindBlock(itemCell, modelSudoku, rowColumnPair)
                         )
                     }
 
@@ -303,5 +322,22 @@ class SudokuGames @Inject constructor() {
 
     }
 
+    private fun getAlmostHindRow(
+        itemCell: ItemCell,
+        modelSudoku: ModelSudoku,
+        rowColumnPair: Triple<List<Int>, List<Int>, List<Int>>
+    ) = if (rowColumnPair.first[itemCell.column - 1] == 8) AlmostHint.ROW else AlmostHint.INITIAL
 
+    private fun getAlmostHindColumn(
+        itemCell: ItemCell,
+        modelSudoku: ModelSudoku,
+        rowColumnPair: Triple<List<Int>, List<Int>, List<Int>>
+    ) = if (rowColumnPair.second[itemCell.row - 1] == 8) AlmostHint.COLUMN else AlmostHint.INITIAL
+
+    private fun getAlmostHindBlock(
+        itemCell: ItemCell,
+        modelSudoku: ModelSudoku,
+        rowColumnPair: Triple<List<Int>, List<Int>, List<Int>>
+    ) = if (rowColumnPair.third[itemCell.block] == 8) AlmostHint.BLOCK else AlmostHint.INITIAL
 }
+

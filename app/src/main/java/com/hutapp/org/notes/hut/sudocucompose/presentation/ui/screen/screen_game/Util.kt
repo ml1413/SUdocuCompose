@@ -1,10 +1,6 @@
 package com.hutapp.org.notes.hut.sudocucompose.presentation.ui.screen.screen_game
 
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
-import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ItemCell
-import com.hutapp.org.notes.hut.sudocucompose.domain.moles.ModelSudoku
+import com.hutapp.org.notes.hut.sudocucompose.domain.models.ItemCell
 
 /**  OTHER FUN __________________________________________________________________________________*/
 fun getTestForCell(itemItemCell: ItemCell): String {
