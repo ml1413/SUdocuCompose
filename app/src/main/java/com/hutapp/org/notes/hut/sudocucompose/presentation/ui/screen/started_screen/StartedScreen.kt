@@ -17,6 +17,7 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,11 +32,10 @@ import com.hutapp.org.notes.hut.sudocucompose.presentation.CellViewModel
 @Composable
 fun StartedScreen(
     modifier: Modifier = Modifier,
-    cellViewModel: CellViewModel,
+    stateCellViewModel: State<CellViewModel.GameState?>,
     onButtonClickListener: () -> Unit
 ) {
-    val stateCellViewModel = cellViewModel.selectedCell.observeAsState().value
-    if (stateCellViewModel is CellViewModel.GameState.ResumeGame) {
+    if (stateCellViewModel.value is CellViewModel.GameState.ResumeGame) {
         Box(
             modifier = modifier.fillMaxSize(),
             contentAlignment = Alignment.BottomCenter

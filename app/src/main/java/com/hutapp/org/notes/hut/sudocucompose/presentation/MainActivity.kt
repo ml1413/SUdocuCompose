@@ -4,15 +4,20 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
-import com.hutapp.org.notes.hut.sudocucompose.domain.models.ModelSudoku
 import com.hutapp.org.notes.hut.sudocucompose.presentation.ui.screen.navigation.AppNavGraph
 import com.hutapp.org.notes.hut.sudocucompose.presentation.ui.screen.navigation.Screens
 import com.hutapp.org.notes.hut.sudocucompose.presentation.ui.screen.screen_game.MyLazyGridForSudokuGameScreen
@@ -34,47 +39,60 @@ class MainActivity : ComponentActivity() {
                 ) {
                     val navHostController = rememberNavController()
                     val cellViewModel: CellViewModel by viewModels()
-                    AppNavGraph(
-                        navController = navHostController,
-                        screenStartedContent = {
-                            StartedScreen(
-                                cellViewModel = cellViewModel,
-                                onButtonClickListener = {
-                                    navHostController.navigate(Screens.Game.route)
-                                }
-                            )
-                        },
-                        screenGameContent = {
-                            MyLazyGridForSudokuGameScreen(
-                                cellViewModel = cellViewModel,// todo need refactor,
-                                onBottomSheetDismissRequest = {
-                                    cellViewModel.unselectedCell()
-                                },
-                                onCheckedIsHideSelected = { isHide ->
-                                    cellViewModel.onOffHideSelected(isHide = isHide)
-                                },
-                                onCheckedIsShowErrorAnswer = { isShowError ->
-                                    cellViewModel.isShowErrorAnswer(isShowError = isShowError)
-                                },
-                                onCheckIsShowAlmostAnswer = { isShowAlmostAnswer ->
-                                    cellViewModel.onOffAlmostAnswer(isHow = isShowAlmostAnswer)
-                                },
-                                onCheckIsShowAllAnswerCorrect = { isShow ->
-                                    cellViewModel.onOffCorrectAnswer(isShow = isShow)
-                                },
-                                onCheckIsShowAnimationHint = { isShowAnimationHint ->
-                                    cellViewModel.onOffAnimationHint(isShowAnimationHint = isShowAnimationHint)
-                                },
-                                navigateOnScreenVictory = {
-                                    navHostController.navigate(Screens.Victory.route)
-                                })
-                        },
-                        screenVictory = {
-                            ScreenVictory()
-                        }
+                    val stateCellViewModel = cellViewModel.selectedCell.observeAsState()
+                    Column {
+                        AppNavGraph(
+                            navController = navHostController,
+                            screenStartedContent = {
+                                StartedScreen(
+                                    stateCellViewModel = stateCellViewModel,
+                                    onButtonClickListener = {
+                                        navHostController.navigate(Screens.Game.route)
+                                    }
+                                )
+                            },
+                            screenGameContent = {
+                                MyLazyGridForSudokuGameScreen(
+                                    stateCellViewModel = stateCellViewModel,
+                                    onLaunchListenerUnselected = {
+                                        cellViewModel.unselectedCell()
+                                    },
+                                    onBottomSheetDismissRequest = {
+                                        cellViewModel.unselectedCell()
+                                    },
+                                    onCheckedIsHideSelected = { isHide ->
+                                        cellViewModel.onOffHideSelected(isHide = isHide)
+                                    },
+                                    onCheckedIsShowErrorAnswer = { isShowError ->
+                                        cellViewModel.isShowErrorAnswer(isShowError = isShowError)
+                                    },
+                                    onCheckIsShowAlmostAnswer = { isShowAlmostAnswer ->
+                                        cellViewModel.onOffAlmostAnswer(isHow = isShowAlmostAnswer)
+                                    },
+                                    onCheckIsShowAllAnswerCorrect = { isShow ->
+                                        cellViewModel.onOffCorrectAnswer(isShow = isShow)
+                                    },
+                                    onCheckIsShowAnimationHint = { isShowAnimationHint ->
+                                        cellViewModel.onOffAnimationHint(isShowAnimationHint = isShowAnimationHint)
+                                    },
+                                    navigateOnScreenVictory = {
+                                        navHostController.navigate(Screens.Victory.route)
+                                    },
+                                    onCellClickListener = { itemCell ->
+                                        cellViewModel.selectedCell(
+                                            itemCell = itemCell
+                                        )
+                                    },
+                                    onNumButtonClickListener = { value ->
+                                        cellViewModel.setValueInCell(value = value)
+                                    })
+                            },
+                            screenVictory = {
+                                ScreenVictory()
+                            }
 
-                    )
-
+                        )
+                    }
                 }
             }
         }

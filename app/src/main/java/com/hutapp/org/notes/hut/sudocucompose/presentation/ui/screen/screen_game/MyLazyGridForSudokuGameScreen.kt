@@ -15,13 +15,13 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.hutapp.org.notes.hut.sudocucompose.domain.models.ItemCell
 import com.hutapp.org.notes.hut.sudocucompose.presentation.CellViewModel
 import kotlinx.coroutines.delay
 
@@ -29,19 +29,25 @@ import kotlinx.coroutines.delay
 @Composable
 fun MyLazyGridForSudokuGameScreen(
     modifier: Modifier = Modifier,
-    cellViewModel: CellViewModel,
+    stateCellViewModel: State<CellViewModel.GameState?>,
+    onLaunchListenerUnselected: () -> Unit,
     onBottomSheetDismissRequest: () -> Unit,
     navigateOnScreenVictory: () -> Unit,
     onCheckedIsHideSelected: (check: Boolean) -> Unit,
     onCheckedIsShowErrorAnswer: (check: Boolean) -> Unit,
     onCheckIsShowAlmostAnswer: (Boolean) -> Unit,
     onCheckIsShowAllAnswerCorrect: (Boolean) -> Unit,
-    onCheckIsShowAnimationHint: (Boolean) -> Unit
+    onCheckIsShowAnimationHint: (Boolean) -> Unit,
+    onCellClickListener: (ItemCell) -> Unit,
+    onNumButtonClickListener: (Int) -> Unit
 ) {
-    val sudokuViewModelState = cellViewModel.selectedCell.observeAsState().value
-    if (sudokuViewModelState is CellViewModel.GameState.ResumeGame) {
+    val state = stateCellViewModel.value
+    if (state is CellViewModel.GameState.ResumeGame) {
         // hide selected after 20 t and seconds_____________________________________________________
-        HideSelected(stateFromViewModel = sudokuViewModelState, cellViewModel = cellViewModel)
+        HideSelected(
+            stateFromViewModel = state,
+            onLaunchListenerUnselected = onLaunchListenerUnselected
+        )
         //__________________________________________________________________________________________
         val openBottomSheet = rememberSaveable { mutableStateOf(false) }
         val colorGrid = MaterialTheme.colorScheme.onBackground
@@ -64,18 +70,16 @@ fun MyLazyGridForSudokuGameScreen(
 
                 SudokuTableGrid(
                     modifier = modifier,
-                    stateFromViewModel = sudokuViewModelState,
+                    stateFromViewModel = state,
                     colorGrid = colorGrid,
                     onCellClickListener = { itemCell ->
-                        cellViewModel.selectedCell(
-                            itemCell = itemCell
-                        )
+                        onCellClickListener(itemCell)
                     }
                 )
                 MyBottomKeyBoard(
                     modifier = modifier,
                     onNumButtonClickListener = { value ->
-                        cellViewModel.setValueInCell(value = value)
+                        onNumButtonClickListener(value)
                     }
                 )
 
@@ -95,7 +99,7 @@ fun MyLazyGridForSudokuGameScreen(
             }
             if (openBottomSheet.value) {
                 MyBottomSheet(
-                    sudokuViewModelState = sudokuViewModelState,
+                    sudokuViewModelState = state,
                     onDismissRequest = {
                         onBottomSheetDismissRequest()
                         openBottomSheet.value = false
@@ -108,7 +112,7 @@ fun MyLazyGridForSudokuGameScreen(
                 )
             }
         }
-    } else if (sudokuViewModelState is CellViewModel.GameState.Victory) {
+    } else if (state is CellViewModel.GameState.Victory) {
         navigateOnScreenVictory()
     }
 }
@@ -117,12 +121,12 @@ fun MyLazyGridForSudokuGameScreen(
 @Composable
 private fun HideSelected(
     stateFromViewModel: CellViewModel.GameState.ResumeGame,
-    cellViewModel: CellViewModel
+    onLaunchListenerUnselected: () -> Unit
 ) {
     if (stateFromViewModel.modelSudoku.isHideSelected && stateFromViewModel.modelSudoku.hasSelectedCells) {
         LaunchedEffect(stateFromViewModel) {
             delay(20_000)
-            cellViewModel.unselectedCell()
+            onLaunchListenerUnselected()
         }
     }
 }
