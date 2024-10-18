@@ -2,7 +2,9 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("kotlin-kapt")
+    id("com.google.devtools.ksp")
     id("com.google.dagger.hilt.android")
+    kotlin("plugin.serialization") version "2.0.21"
 }
 
 android {
@@ -68,11 +70,11 @@ dependencies {
     kapt("com.google.dagger:hilt-compiler:2.52")
 
     //room
-    val room_version = "2.5.0"
-    implementation ("androidx.room:room-runtime:$room_version")
-    annotationProcessor ("androidx.room:room-compiler:$room_version")
+    implementation("androidx.room:room-ktx:2.5.0")
+    annotationProcessor("androidx.room:room-compiler:2.5.0")
+    ksp("androidx.room:room-compiler:2.5.0")
 
-
+    implementation ("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
 
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
     implementation("androidx.compose.ui:ui")

@@ -1,5 +1,8 @@
 package com.hutapp.org.notes.hut.sudocucompose.presentation.DI
 
+import android.content.Context
+import androidx.room.Room
+import com.hutapp.org.notes.hut.sudocucompose.data.Room.SudokuDB
 import com.hutapp.org.notes.hut.sudocucompose.data.SudokuGames
 import com.hutapp.org.notes.hut.sudocucompose.data.repository.RepositorySudokuGameImpl
 import com.hutapp.org.notes.hut.sudocucompose.domain.repository.RepositorySudokuGame
@@ -10,12 +13,14 @@ import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.IsShowAnimationHintU
 import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.IsShowCorrectAnswerUseCase
 import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.IsShowErrorAnswerUseCase
 import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.OnOffHideSelectedLineOnFieldUseCase
+import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.SaveInRoomUseCase
 import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.SelectedCellUseCase
 import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.SetValueInCellUseCase
 import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.UnSelectedCellUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -28,10 +33,20 @@ class Module {
         return SudokuGames()
     }
 
+    @Provides
+    @Singleton
+    fun provideDB(@ApplicationContext context: Context): SudokuDB {
+        return Room.databaseBuilder(
+            context = context,
+            klass = SudokuDB::class.java,
+            name = SudokuDB.NAME_DB_SUDOKU
+        ).build()
+    }
+
     @Singleton
     @Provides
-    fun provideRepository(sudokuGames: SudokuGames): RepositorySudokuGame {
-        return RepositorySudokuGameImpl(sudokuGames = sudokuGames)
+    fun provideRepository(sudokuGames: SudokuGames, sudokuDB: SudokuDB): RepositorySudokuGame {
+        return RepositorySudokuGameImpl(sudokuGames = sudokuGames, sudokuDB = sudokuDB)
     }
 
     @Provides
@@ -82,5 +97,10 @@ class Module {
     @Provides
     fun provideIsShowAnimationHintUseCase(repositorySudokuGame: RepositorySudokuGame): IsShowAnimationHintUseCase {
         return IsShowAnimationHintUseCase(repositorySudokuGame = repositorySudokuGame)
+    }
+
+    @Provides
+    fun provideSaveInRoomUseCase(repositorySudokuGame: RepositorySudokuGame): SaveInRoomUseCase {
+        return SaveInRoomUseCase(repositorySudokuGame = repositorySudokuGame)
     }
 }

@@ -3,6 +3,7 @@ package com.hutapp.org.notes.hut.sudocucompose.presentation
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.hutapp.org.notes.hut.sudocucompose.domain.models.ItemCell
 import com.hutapp.org.notes.hut.sudocucompose.domain.models.ModelSudoku
 import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.CheckAllAnswerUseCase
@@ -12,10 +13,12 @@ import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.IsShowAnimationHintU
 import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.IsShowCorrectAnswerUseCase
 import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.IsShowErrorAnswerUseCase
 import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.OnOffHideSelectedLineOnFieldUseCase
+import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.SaveInRoomUseCase
 import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.SelectedCellUseCase
 import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.SetValueInCellUseCase
 import com.hutapp.org.notes.hut.sudocucompose.domain.uscase.UnSelectedCellUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -29,7 +32,8 @@ class CellViewModel @Inject constructor(
     private val isShowErrorAnswerUseCase: IsShowErrorAnswerUseCase,
     private val isHowAlmostAnswerUseCase: IsHowAlmostAnswerUseCase,
     private val isShowCorrectAnswerUseCase: IsShowCorrectAnswerUseCase,
-    private val isShowAnimationHintUseCase: IsShowAnimationHintUseCase
+    private val isShowAnimationHintUseCase: IsShowAnimationHintUseCase,
+    private val saveInRoomUseCase: SaveInRoomUseCase
 ) : ViewModel() {
 
 
@@ -62,6 +66,8 @@ class CellViewModel @Inject constructor(
             _selectedCell.value =
                 if (isAllAnswerCorrect) GameState.Victory else GameState.ResumeGame(modelSudoku = newModelSudoku)
         }
+        // todo temp test invoke
+        saveInRoom()
     }
 
     fun unselectedCell() {
@@ -114,7 +120,13 @@ class CellViewModel @Inject constructor(
         }
     }
 
-
+    fun saveInRoom() {
+        _selectedCell.value?.checkCurrentState { modelSudoku ->
+            viewModelScope.launch {
+                saveInRoomUseCase(modelSudoku = modelSudoku)
+            }
+        }
+    }
 
     sealed class GameState() {
         object Initial : GameState()

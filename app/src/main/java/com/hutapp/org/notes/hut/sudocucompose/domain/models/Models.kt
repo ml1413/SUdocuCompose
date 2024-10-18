@@ -1,5 +1,8 @@
 package com.hutapp.org.notes.hut.sudocucompose.domain.models
 
+import com.hutapp.org.notes.hut.sudocucompose.data.Room.EntityItemCell
+import com.hutapp.org.notes.hut.sudocucompose.data.Room.EntityModelSudoku
+
 data class ModelSudoku(
     val isVictory: Boolean = false,
     val hasSelectedCells: Boolean = false,
@@ -28,8 +31,32 @@ data class ItemCell(
 
     )
 
+fun ModelSudoku.mapToEntity() =
+    EntityModelSudoku(
+        isVictory = this.isVictory,
+        hasSelectedCells = this.hasSelectedCells,
+        isHideSelected = this.isHideSelected,
+        isShowErrorAnswer = this.isShowErrorAnswer,
+        isShowAlmostAnswer = this.isShowAlmostAnswer,
+        isShowCorrectAnswer = this.isShowCorrectAnswer,
+        isShowAnimationHint = this.isShowAnimationHint,
+        entityListItemCell = this.listItemCell.map { itemCell -> itemCell.mapToEntity() }
+    )
 
-enum class AlmostHint {
-    INITIAL, ROW, COLUMN, BLOCK
-}
+fun ItemCell.mapToEntity() =
+    EntityItemCell(
+        startedValue = this.startedValue,
+        setValue = this.setValue,
+        isStartedCell = this.isStartedCell,
+        isSelected = this.isSelected,
+        block = this.block,
+        selectedCellIndex = this.selectedCellIndex,
+        row = this.row,
+        column = this.column,
+        colorCell = this.colorCell.mapToEntity(),
+        textStyle = this.textStyle.mapToEntity(),
+        almostHintRow = this.almostHintRow.mapToEntity(),
+        almostHintColumn = this.almostHintColumn.mapToEntity(),
+        almostHintBlock = this.almostHintBlock.mapToEntity(),
+    )
 

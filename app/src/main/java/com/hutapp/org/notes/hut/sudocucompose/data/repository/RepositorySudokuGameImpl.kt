@@ -1,14 +1,16 @@
 package com.hutapp.org.notes.hut.sudocucompose.data.repository
 
+import com.hutapp.org.notes.hut.sudocucompose.data.Room.SudokuDB
 import com.hutapp.org.notes.hut.sudocucompose.data.SudokuGames
 import com.hutapp.org.notes.hut.sudocucompose.domain.models.ItemCell
 import com.hutapp.org.notes.hut.sudocucompose.domain.models.ModelSudoku
+import com.hutapp.org.notes.hut.sudocucompose.domain.models.mapToEntity
 import com.hutapp.org.notes.hut.sudocucompose.domain.repository.RepositorySudokuGame
 import javax.inject.Inject
 
-class RepositorySudokuGameImpl @Inject constructor
-    (
-    private val sudokuGames: SudokuGames
+class RepositorySudokuGameImpl @Inject constructor(
+    private val sudokuGames: SudokuGames,
+    private val sudokuDB: SudokuDB
 ) : RepositorySudokuGame {
     override fun selectedCell(
         modelSudoku: ModelSudoku,
@@ -47,6 +49,13 @@ class RepositorySudokuGameImpl @Inject constructor
             isShowAnimationHint = isShowAnimationHint,
             modelSudoku = modelSudoku
         )
+    }
+
+    override suspend fun saveInRoom(modelSudoku: ModelSudoku) {
+        val entityModelSudoku = modelSudoku.mapToEntity()
+        sudokuDB.getDao().apply {
+            updateItem(entityModelSudoku = entityModelSudoku)
+        }
     }
 
     override fun getListForStated(): ModelSudoku {
