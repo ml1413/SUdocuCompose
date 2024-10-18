@@ -42,84 +42,79 @@ class CellViewModel @Inject constructor(
     }
 
     fun selectedCell(itemCell: ItemCell) {
-        val stateGame = _selectedCell.value
-        if (stateGame is GameState.ResumeGame) {
-            val modelSudoku = getModelSudokuUseCase(
-                modelSudoku = stateGame.modelSudoku,
+        _selectedCell.value?.checkCurrentState { modelSudoku ->
+
+            val newModel = getModelSudokuUseCase(
+                modelSudoku = modelSudoku,
                 itemCell = itemCell
             )
-            _selectedCell.value = GameState.ResumeGame(modelSudoku = modelSudoku)
+            _selectedCell.value = GameState.ResumeGame(modelSudoku = newModel)
         }
     }
 
     fun setValueInCell(value: Int) {
-        val stateGame = _selectedCell.value
-        if (stateGame is GameState.ResumeGame) {
+        _selectedCell.value?.checkCurrentState { modelSudoku ->
             //set value in model
             val newModelSudoku =
-                setValueInCellUseCase(value = value, modelSudoku = stateGame.modelSudoku)
+                setValueInCellUseCase(value = value, modelSudoku = modelSudoku)
             // check app answer
-            val isAllAnswerCorrect = checkAllAnswerUseCase(modelSudoku = newModelSudoku)
-            checkIsVictory(isAllAnswerCorrect, newModelSudoku)
+            val isAllAnswerCorrect = checkAllAnswerUseCase(modelSudoku = newModelSudoku).isVictory
+            _selectedCell.value =
+                if (isAllAnswerCorrect) GameState.Victory else GameState.ResumeGame(modelSudoku = newModelSudoku)
         }
     }
 
     fun unselectedCell() {
-        val stateGame = _selectedCell.value
-        if (stateGame is GameState.ResumeGame) {
-            val newModelSudoku = unSelectedCellUseCase(modelSudoku = stateGame.modelSudoku)
+        _selectedCell.value?.checkCurrentState { modelSudoku ->
+            val newModelSudoku = unSelectedCellUseCase(modelSudoku = modelSudoku)
             _selectedCell.value = GameState.ResumeGame(modelSudoku = newModelSudoku)
         }
-
     }
 
     fun onOffHideSelected(isHide: Boolean) {
-        val state = _selectedCell.value
-        if (state is GameState.ResumeGame) {
+        _selectedCell.value?.checkCurrentState { modelSudoku ->
             val newModel = onOffHideSelectedLineOnFieldUseCase(
                 isHide = isHide,
-                modelSudoku = state.modelSudoku
+                modelSudoku = modelSudoku
             )
             _selectedCell.value = GameState.ResumeGame(modelSudoku = newModel)
         }
     }
 
     fun onOffAlmostAnswer(isHow: Boolean) {
-        val state = _selectedCell.value
-        if (state is GameState.ResumeGame) {
-            val newModel = isHowAlmostAnswerUseCase(isHow = isHow, modelSudoku = state.modelSudoku)
+        _selectedCell.value?.checkCurrentState { modelSudoku ->
+            val newModel = isHowAlmostAnswerUseCase(isHow = isHow, modelSudoku = modelSudoku)
             _selectedCell.value = GameState.ResumeGame(modelSudoku = newModel)
         }
     }
 
     fun isShowErrorAnswer(isShowError: Boolean) {
-        val state = _selectedCell.value
-        if (state is GameState.ResumeGame) {
+        _selectedCell.value?.checkCurrentState { modelSudoku ->
             val newModel =
-                isShowErrorAnswerUseCase(isShowError = isShowError, modelSudoku = state.modelSudoku)
+                isShowErrorAnswerUseCase(isShowError = isShowError, modelSudoku = modelSudoku)
             _selectedCell.value = GameState.ResumeGame(modelSudoku = newModel)
         }
     }
 
     fun onOffCorrectAnswer(isShow: Boolean) {
-        val state = _selectedCell.value
-        if (state is GameState.ResumeGame) {
+        _selectedCell.value?.checkCurrentState { modelSudoku ->
             val newModel =
-                isShowCorrectAnswerUseCase(isShow = isShow, modelSudoku = state.modelSudoku)
+                isShowCorrectAnswerUseCase(isShow = isShow, modelSudoku = modelSudoku)
             _selectedCell.value = GameState.ResumeGame(modelSudoku = newModel)
         }
     }
 
     fun onOffAnimationHint(isShowAnimationHint: Boolean) {
-        val state = _selectedCell.value
-        if (state is GameState.ResumeGame) {
+        _selectedCell.value?.checkCurrentState() { modelSudoku ->
             val newModel = isShowAnimationHintUseCase(
                 isShowAnimationHint = isShowAnimationHint,
-                modelSudoku = state.modelSudoku
+                modelSudoku = modelSudoku
             )
             _selectedCell.value = GameState.ResumeGame(modelSudoku = newModel)
         }
     }
+
+
 
     sealed class GameState() {
         object Initial : GameState()
@@ -128,16 +123,15 @@ class CellViewModel @Inject constructor(
     }
 
     /** other fun_________________________________________________________________________________*/
-    private fun checkIsVictory(
-        isAllAnswerCorrect: ModelSudoku,
-        newModelSudoku: ModelSudoku
+    private fun GameState.checkCurrentState(
+        stateIsInitial: () -> Unit = {},
+        stateIsVictory: () -> Unit = {},
+        stateIsGame: (ModelSudoku) -> Unit = {},
     ) {
-        if (isAllAnswerCorrect.isVictory) {
-            _selectedCell.value = GameState.Victory
-        } else {
-            _selectedCell.value = GameState.ResumeGame(modelSudoku = newModelSudoku)
+        when (this) {
+            GameState.Initial -> stateIsInitial()
+            is GameState.ResumeGame -> stateIsGame(this.modelSudoku)
+            GameState.Victory -> stateIsVictory()
         }
     }
-
-
 }
