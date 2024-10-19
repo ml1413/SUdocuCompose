@@ -1,8 +1,8 @@
 package com.hutapp.org.notes.hut.sudocucompose.data.repository
 
 import android.util.Log
-import com.hutapp.org.notes.hut.sudocucompose.data.Room.EntityModelSudoku
 import com.hutapp.org.notes.hut.sudocucompose.data.Room.SudokuDB
+import com.hutapp.org.notes.hut.sudocucompose.data.Room.mapToModel
 import com.hutapp.org.notes.hut.sudocucompose.data.SudokuGames
 import com.hutapp.org.notes.hut.sudocucompose.domain.models.ItemCell
 import com.hutapp.org.notes.hut.sudocucompose.domain.models.ModelSudoku
@@ -61,10 +61,8 @@ class RepositorySudokuGameImpl @Inject constructor(
     }
 
     override suspend fun getListForStated(): ModelSudoku {
-        //todo worck her
-        val l = sudokuDB.getDao().getSavedSudokuEntity()
-        Log.d("TAG1", "getListForStated: $l")
-        return sudokuGames.getListModelSudoku()
+        val result = sudokuDB.getDao().getSavedSudokuEntity()
+        return result?.mapToModel() ?: sudokuGames.getListModelSudoku()
     }
 
     override fun setValueInCell(value: Int, modelSudoku: ModelSudoku): ModelSudoku {

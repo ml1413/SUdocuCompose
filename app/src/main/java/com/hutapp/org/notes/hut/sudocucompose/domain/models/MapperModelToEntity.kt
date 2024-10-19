@@ -1,10 +1,10 @@
 package com.hutapp.org.notes.hut.sudocucompose.domain.models
 
 import com.hutapp.org.notes.hut.sudocucompose.data.Room.EntityAlmostHint
+import com.hutapp.org.notes.hut.sudocucompose.data.Room.EntityColorCellEnum
 import com.hutapp.org.notes.hut.sudocucompose.data.Room.EntityItemCell
 import com.hutapp.org.notes.hut.sudocucompose.data.Room.EntityModelSudoku
 import com.hutapp.org.notes.hut.sudocucompose.data.Room.EntityTextStyleEnum
-import com.hutapp.org.notes.hut.sudocucompose.data.Room.ModelOrEntity
 
 fun ModelSudoku.mapToEntity() =
     EntityModelSudoku(
@@ -53,4 +53,13 @@ fun TextStyleEnum.mapToEntity() =
         TextStyleEnum.ALMOST -> EntityTextStyleEnum.ALMOST
         TextStyleEnum.ALL_IS_CORRECT -> EntityTextStyleEnum.ALL_IS_CORRECT
         TextStyleEnum.ERROR -> EntityTextStyleEnum.ERROR
+    }
+fun ColorCellEnum.mapToEntity()=
+    when (this) {
+        ColorCellEnum.UNSELECTED -> EntityColorCellEnum.UNSELECTED
+        ColorCellEnum.SELECTED_CELL -> EntityColorCellEnum.SELECTED_CELL
+        ColorCellEnum.SELECT_LINE -> EntityColorCellEnum.SELECT_LINE
+        ColorCellEnum.STARTED_CELL_ON_LINE -> EntityColorCellEnum.STARTED_CELL_ON_LINE
+        ColorCellEnum.COLOR_STARTED_CELL -> EntityColorCellEnum.COLOR_STARTED_CELL
+        ColorCellEnum.SELECTED_BLOCK -> EntityColorCellEnum.SELECTED_BLOCK
     }

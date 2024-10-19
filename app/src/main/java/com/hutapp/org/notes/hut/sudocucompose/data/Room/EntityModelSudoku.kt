@@ -4,11 +4,13 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.hutapp.org.notes.hut.sudocucompose.data.Room.EntityModelSudoku.Companion.TABLE_NAME
 import kotlinx.serialization.Serializable
+
 interface ModelOrEntity
+
 @Entity(tableName = TABLE_NAME)
 data class EntityModelSudoku(
-    @PrimaryKey(autoGenerate = true)
-    val id: Int? = null,
+    @PrimaryKey
+    val id: Int = 1,
     val isVictory: Boolean,
     val hasSelectedCells: Boolean,
     val isHideSelected: Boolean,
@@ -17,7 +19,7 @@ data class EntityModelSudoku(
     val isShowCorrectAnswer: Boolean,
     val isShowAnimationHint: Boolean,
     val entityListItemCell: List<EntityItemCell>
-):ModelOrEntity {
+) : ModelOrEntity {
     companion object {
         const val TABLE_NAME = "sudoku_table"
     }
