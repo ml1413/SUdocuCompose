@@ -12,5 +12,5 @@ interface SudokuEntityDAO {
     suspend fun updateItem(entityModelSudoku: EntityModelSudoku)
 
     @Query("select * from  $TABLE_NAME")
-    suspend fun getSavedSudokuEntity():EntityModelSudoku
+    suspend fun getSavedSudokuEntity(): EntityModelSudoku?
 }
