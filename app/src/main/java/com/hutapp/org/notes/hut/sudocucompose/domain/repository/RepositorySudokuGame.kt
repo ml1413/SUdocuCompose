@@ -4,7 +4,7 @@ import com.hutapp.org.notes.hut.sudocucompose.domain.models.ItemCell
 import com.hutapp.org.notes.hut.sudocucompose.domain.models.ModelSudoku
 
 interface RepositorySudokuGame {
-    fun getListForStated(): ModelSudoku
+    suspend fun getListForStated(): ModelSudoku
     fun setValueInCell(value: Int, modelSudoku: ModelSudoku): ModelSudoku
     fun checkAllAnswer(modelSudoku: ModelSudoku): ModelSudoku
     fun unselectedCell(modelSudoku: ModelSudoku): ModelSudoku
@@ -18,5 +18,5 @@ interface RepositorySudokuGame {
     fun isShowAlmostAnswer(isHow: Boolean, modelSudoku: ModelSudoku): ModelSudoku
     fun isShowCorrectAnswer(isShow: Boolean, modelSudoku: ModelSudoku): ModelSudoku
     fun onOffAnimationHint(isShowAnimationHint: Boolean, modelSudoku: ModelSudoku): ModelSudoku
-   suspend fun saveInRoom(modelSudoku: ModelSudoku)
+    suspend fun saveInRoom(modelSudoku: ModelSudoku)
 }

@@ -1,7 +1,6 @@
 package com.hutapp.org.notes.hut.sudocucompose.domain.models
 
-import com.hutapp.org.notes.hut.sudocucompose.data.Room.EntityItemCell
-import com.hutapp.org.notes.hut.sudocucompose.data.Room.EntityModelSudoku
+import com.hutapp.org.notes.hut.sudocucompose.data.Room.ModelOrEntity
 
 data class ModelSudoku(
     val isVictory: Boolean = false,
@@ -12,7 +11,7 @@ data class ModelSudoku(
     val isShowCorrectAnswer: Boolean = false,
     val isShowAnimationHint: Boolean = false,
     val listItemCell: List<ItemCell>
-)
+) : ModelOrEntity
 
 data class ItemCell(
     val startedValue: Int,
@@ -31,32 +30,4 @@ data class ItemCell(
 
     )
 
-fun ModelSudoku.mapToEntity() =
-    EntityModelSudoku(
-        isVictory = this.isVictory,
-        hasSelectedCells = this.hasSelectedCells,
-        isHideSelected = this.isHideSelected,
-        isShowErrorAnswer = this.isShowErrorAnswer,
-        isShowAlmostAnswer = this.isShowAlmostAnswer,
-        isShowCorrectAnswer = this.isShowCorrectAnswer,
-        isShowAnimationHint = this.isShowAnimationHint,
-        entityListItemCell = this.listItemCell.map { itemCell -> itemCell.mapToEntity() }
-    )
-
-fun ItemCell.mapToEntity() =
-    EntityItemCell(
-        startedValue = this.startedValue,
-        setValue = this.setValue,
-        isStartedCell = this.isStartedCell,
-        isSelected = this.isSelected,
-        block = this.block,
-        selectedCellIndex = this.selectedCellIndex,
-        row = this.row,
-        column = this.column,
-        colorCell = this.colorCell.mapToEntity(),
-        textStyle = this.textStyle.mapToEntity(),
-        almostHintRow = this.almostHintRow.mapToEntity(),
-        almostHintColumn = this.almostHintColumn.mapToEntity(),
-        almostHintBlock = this.almostHintBlock.mapToEntity(),
-    )
 

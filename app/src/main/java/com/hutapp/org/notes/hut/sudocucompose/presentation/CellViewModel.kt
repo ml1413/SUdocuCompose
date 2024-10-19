@@ -41,8 +41,10 @@ class CellViewModel @Inject constructor(
     val selectedCell: LiveData<GameState> = _selectedCell
 
     init {
-        val modelSudoku = getListForStartedUseCase()
-        _selectedCell.value = GameState.ResumeGame(modelSudoku = modelSudoku)
+        viewModelScope.launch {
+            val modelSudoku = getListForStartedUseCase()
+            _selectedCell.value = GameState.ResumeGame(modelSudoku = modelSudoku)
+        }
     }
 
     fun selectedCell(itemCell: ItemCell) {

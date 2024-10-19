@@ -60,6 +60,7 @@ class SudokuGames @Inject constructor() {
         modelSudoku: ModelSudoku,
         itemCell: ItemCell
     ): ModelSudoku {
+        val start = System.currentTimeMillis()
         // get unselected list______________________________________________________________________
         val unselectedList = getListUnselectedItem(modelSudoku = modelSudoku)
         // if selected is the same exit of fun _____________________________________________________
@@ -102,6 +103,8 @@ class SudokuGames @Inject constructor() {
                 else -> itItem
             }
         }
+        val finish = System.currentTimeMillis()
+        Log.d("TAG1", "selectedCell: time = ${finish-start}")
         return modelSudoku.copy(listItemCell = newList, hasSelectedCells = true)
     }
 

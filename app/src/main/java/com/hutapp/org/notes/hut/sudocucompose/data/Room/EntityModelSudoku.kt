@@ -2,15 +2,11 @@ package com.hutapp.org.notes.hut.sudocucompose.data.Room
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import androidx.room.TypeConverter
 import com.hutapp.org.notes.hut.sudocucompose.data.Room.EntityModelSudoku.Companion.TABLE_NAME
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
-
-
+interface ModelOrEntity
 @Entity(tableName = TABLE_NAME)
-class EntityModelSudoku(
+data class EntityModelSudoku(
     @PrimaryKey(autoGenerate = true)
     val id: Int? = null,
     val isVictory: Boolean,
@@ -21,7 +17,7 @@ class EntityModelSudoku(
     val isShowCorrectAnswer: Boolean,
     val isShowAnimationHint: Boolean,
     val entityListItemCell: List<EntityItemCell>
-) {
+):ModelOrEntity {
     companion object {
         const val TABLE_NAME = "sudoku_table"
     }
@@ -71,17 +67,6 @@ enum class EntityTextStyleEnum {
     ERROR
 }
 
-class Converters {
 
-    @TypeConverter
-    fun fromModelList(value: List<EntityItemCell>): String {
-        return Json.encodeToString(value = value)
-    }
-
-    @TypeConverter
-    fun toModelList(value: String): List<EntityItemCell> {
-        return Json.decodeFromString(value)
-    }
-}
 
 

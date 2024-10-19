@@ -5,7 +5,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 
 @Database(entities = [EntityModelSudoku::class], version = 1)
-@TypeConverters(Converters::class)
+@TypeConverters(MyTypeConverters::class)
 abstract class SudokuDB : RoomDatabase() {
     abstract fun getDao(): SudokuEntityDAO
 
