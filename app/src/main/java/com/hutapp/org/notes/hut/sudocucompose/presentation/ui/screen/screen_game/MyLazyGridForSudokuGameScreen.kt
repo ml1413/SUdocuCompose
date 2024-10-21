@@ -1,6 +1,7 @@
 package com.hutapp.org.notes.hut.sudocucompose.presentation.ui.screen.screen_game
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,9 +21,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.hutapp.org.notes.hut.sudocucompose.domain.models.ItemCell
 import com.hutapp.org.notes.hut.sudocucompose.presentation.CellViewModel
+import com.hutapp.org.notes.hut.sudocucompose.presentation.ui.MyLifeCycle
 import kotlinx.coroutines.delay
 
 
@@ -39,10 +42,13 @@ fun MyLazyGridForSudokuGameScreen(
     onCheckIsShowAllAnswerCorrect: (Boolean) -> Unit,
     onCheckIsShowAnimationHint: (Boolean) -> Unit,
     onCellClickListener: (ItemCell) -> Unit,
-    onNumButtonClickListener: (Int) -> Unit
+    onNumButtonClickListener: (Int) -> Unit,
+    onPauseListened: () -> Unit
 ) {
     val state = stateCellViewModel.value
     if (state is CellViewModel.GameState.ResumeGame) {
+        //lifeCycle listener
+        MyLifeCycle(onPause = { onPauseListened() })
         // hide selected after 20 t and seconds_____________________________________________________
         HideSelected(
             stateFromViewModel = state,
