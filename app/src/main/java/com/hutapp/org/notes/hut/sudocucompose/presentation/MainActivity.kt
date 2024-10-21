@@ -40,6 +40,7 @@ class MainActivity : ComponentActivity() {
                     val navHostController = rememberNavController()
                     val cellViewModel: CellViewModel by viewModels()
                     val stateCellViewModel = cellViewModel.selectedCell.observeAsState()
+
                     Column {
                         AppNavGraph(
                             navController = navHostController,
@@ -85,6 +86,9 @@ class MainActivity : ComponentActivity() {
                                     },
                                     onNumButtonClickListener = { value ->
                                         cellViewModel.setValueInCell(value = value)
+                                    },
+                                    onPauseListened = {
+                                        cellViewModel.saveInRoom()
                                     })
                             },
                             screenVictory = {

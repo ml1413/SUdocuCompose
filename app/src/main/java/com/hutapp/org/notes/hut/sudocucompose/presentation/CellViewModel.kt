@@ -1,7 +1,9 @@
 package com.hutapp.org.notes.hut.sudocucompose.presentation
 
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.OnLifecycleEvent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hutapp.org.notes.hut.sudocucompose.domain.models.ItemCell
@@ -68,8 +70,6 @@ class CellViewModel @Inject constructor(
             _selectedCell.value =
                 if (isAllAnswerCorrect) GameState.Victory else GameState.ResumeGame(modelSudoku = newModelSudoku)
         }
-        // todo temp test invoke
-        saveInRoom()
     }
 
     fun unselectedCell() {
@@ -121,7 +121,6 @@ class CellViewModel @Inject constructor(
             _selectedCell.value = GameState.ResumeGame(modelSudoku = newModel)
         }
     }
-
     fun saveInRoom() {
         _selectedCell.value?.checkCurrentState { modelSudoku ->
             viewModelScope.launch {
